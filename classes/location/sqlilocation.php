@@ -151,7 +151,7 @@ class SQLILocation
      * @throws SQLILocationException
      * @return void
      */
-    protected function getNode()
+    public function getNode()
     {
         if ( !$this->node instanceof eZContentObjectTreeNode )
         {
@@ -159,5 +159,6 @@ class SQLILocation
             if ( !$this->node instanceof eZContentObjectTreeNode )
                 throw new SQLILocationException( "Unable to find eZContentObjectTreeNode with NodeID #$this->nodeID" );
         }
+        return $this->node;
     }
 }
