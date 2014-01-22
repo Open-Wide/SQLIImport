@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing SQLILocationException class
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -12,7 +13,6 @@
 /**
  * This exception is thrown when an issue related to a location has been detected
  */
-class SQLILocationException extends SQLIImportBaseException
-{
-    
+class SQLILocationException extends SQLIImportBaseException {
+	
 }

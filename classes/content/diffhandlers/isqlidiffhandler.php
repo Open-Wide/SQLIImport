@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing ISQLIDiffHandler class
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -24,14 +25,14 @@
  *
  * </code>
  */
-interface ISQLIDiffHandler
-{
-    /**
-     * Checks if content has been really modified for $field
-     * Returns true if content has been modified, false otherwise
-     * @param string $data "New" data that needs to be compared with published data
-     * @param eZContentObjectAttribute $attribute Published attribute, for reference
-     * @return bool
-     */
-    public static function contentIsModified( $data, eZContentObjectAttribute $attribute );
+interface ISQLIDiffHandler {
+
+	/**
+	 * Checks if content has been really modified for $field
+	 * Returns true if content has been modified, false otherwise
+	 * @param string $data "New" data that needs to be compared with published data
+	 * @param eZContentObjectAttribute $attribute Published attribute, for reference
+	 * @return bool
+	 */
+	public static function contentIsModified( $data, eZContentObjectAttribute $attribute );
 }

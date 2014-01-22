@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SQLIContentException
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -12,7 +13,6 @@
 /**
  * This exception is thrown when an issue related to content has been detected
  */
-class SQLIContentException extends SQLIImportBaseException
-{
-
+class SQLIContentException extends SQLIImportBaseException {
+	
 }

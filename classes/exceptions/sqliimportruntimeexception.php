@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SQLIImportRuntimeException
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -11,7 +12,6 @@
 /**
  * This exception is thrown when a runtime issue has been detected
  */
-class SQLIImportRuntimeException extends SQLIImportBaseException
-{
-
+class SQLIImportRuntimeException extends SQLIImportBaseException {
+	
 }

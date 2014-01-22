@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SQLi Import cleanup cronjob
  * Will clear imported content objects caches if needed
@@ -9,14 +10,13 @@
  * @version @@@VERSION@@@
  * @package sqliimport
  */
-
 // Clear view cache
 SQLIImportUtils::viewCacheClear();
 
 // Indexing will be trigerred by indexcontent cronjob
 
 $cli->output( 'Cleanup is over :)' );
-    
+
 $memoryMax = memory_get_peak_usage(); // Result is in bytes
 $memoryMax = round( $memoryMax / 1024 / 1024, 2 ); // Convert in Megabytes
-$cli->output( 'Peak memory usage : '.$memoryMax.'M' );
+$cli->output( 'Peak memory usage : ' . $memoryMax . 'M' );
