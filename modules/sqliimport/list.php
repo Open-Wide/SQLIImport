@@ -7,6 +7,8 @@
  * @version @@@VERSION@@@
  * @package sqliimport
  */
+OWScriptLogger::startLog( 'sqliimport_module' );
+OWScriptLogger::setAllowedDatabaseDebugLevel( 'none' );
 
 $Module = $Params['Module'];
 $Result = array();
@@ -31,7 +33,7 @@ try
 catch( Exception $e )
 {
     $errMsg = $e->getMessage();
-    SQLIImportLogger::writeError( $errMsg );
+    OWScriptLogger::writeError( $errMsg, 'list' );
     $tpl->setVariable( 'error_message', $errMsg );
 }
 
