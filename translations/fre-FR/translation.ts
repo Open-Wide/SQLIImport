@@ -184,6 +184,10 @@
         <source>Details</source>
         <translation>Détails</translation>
     </message>
+    <message>
+        <source>View logs</source>
+        <translation>Voir les logs</translation>
+    </message>
 </context>
 <context>
     <name>extension/sqliimport/schedulefrequency</name>

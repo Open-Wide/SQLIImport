@@ -83,6 +83,7 @@ abstract class SQLIImportAbstractHandler {
 		$this->importINI = eZINI::instance( 'sqliimport.ini' );
 		$this->cli = eZCLI::instance();
 		$this->options = $options;
+		OWScriptLogger::startLog( $this->getHandlerIdentifier() );
 	}
 
 	/**

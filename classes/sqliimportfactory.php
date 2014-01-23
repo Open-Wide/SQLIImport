@@ -237,7 +237,8 @@ final class SQLIImportFactory {
 				// Progress bar implementation
 				$progressBarOptions = array(
 					'emptyChar' => ' ',
-					'barChar' => '='
+					'barChar' => '=',
+					'formatString' => "%act% / %max% [%bar%] %fraction%%  | ",
 				);
 				$progressBar = new ezcConsoleProgressbar( $this->output, $processLength, $progressBarOptions );
 				$progressBar->start();
@@ -260,6 +261,8 @@ final class SQLIImportFactory {
 					$diffTime = $endTime - $startTime;
 					$oldProcessTime = $aImportItems[$i]->attribute( 'process_time' );
 					$aImportItems[$i]->setAttribute( 'process_time', $oldProcessTime + $diffTime );
+					$logger = OWScriptLogger::instance();
+					$aImportItems[$i]->setAttribute( 'running_log', $logger->attribute( 'id' ) );
 					$aImportItems[$i]->store( array( 'process_time' ) );
 
 					// Interruption handling
