@@ -16,7 +16,7 @@ $isPcntl = function_exists( 'pcntl_signal' );
 if ( $isPcntl ) {
 	declare( ticks = 1 );
 
-	function sigHandler( $signo ) {
+	function SQLIImportSignalHandler( $signo ) {
 		if ( SQLIImportToken::importIsRunning() ) {
 			// Note : SIGKILL cannot be caught
 			// So try to always send a SIGINT (kill -2) or SIGTERM (kill -15) to request interruption
@@ -33,6 +33,8 @@ if ( $isPcntl ) {
 		}
 	}
 
-	pcntl_signal( SIGTERM, 'sigHandler' );
-	pcntl_signal( SIGINT, 'sigHandler' );
+	if ( !function_exists( 'OWScriptLoggerSignalHandler' ) ) {
+		pcntl_signal( SIGTERM, 'SQLIImportSignalHandler' );
+		pcntl_signal( SIGINT, 'SQLIImportSignalHandler' );
+	}
 }
