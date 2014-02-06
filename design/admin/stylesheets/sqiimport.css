@@ -1,10 +1,14 @@
-.running_log .notice {
-    color: green;
-    display: none
+#ImportHandlersOptions {
+	display: none;
 }
-.running_log .warning {
-    color: orange
+
+.ImportHandlersOptions {
+	border: 1px #000 solid;
+	padding: 15px;
+	background: #EEE;
 }
-.running_log .error {
-    color: red
+
+.ImportHandlersOptions h5 {
+	float: left;
+	width: 200px;
 }

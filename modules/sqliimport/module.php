@@ -36,10 +36,15 @@ $ViewList['addimport'] = array(
 	'script' => 'addimport.php',
 	'params' => array(),
 	'unordered_params' => array(),
-	'single_post_actions' => array( 'RequestImportButton' => 'RequestImport' ),
-	'post_action_parameters' => array( 'RequestImport' => array(
+	'post_actions' => array( 'BrowseActionName' ),
+	'single_post_actions' => array(
+		'BrowseButton' => 'Browse',
+		'RequestImportButton' => 'RequestImport' ),
+	'post_action_parameters' => array(
+		'RequestImport' => array(
 			'ImportHandler' => 'ImportHandler',
-			'ImportOptions' => 'ImportOptions'
+			'ImportOptions' => 'ImportOptions',
+			'FileOptions' => 'FileOptions'
 		) ),
 	'default_navigation_part' => 'sqliimportnavigationpart',
 	'functions' => array( 'manageimports' )
@@ -49,10 +54,16 @@ $ViewList['addscheduled'] = array(
 	'script' => 'addscheduled.php',
 	'params' => array( 'ScheduledImportID' ),
 	'unordered_params' => array(),
-	'single_post_actions' => array( 'RequestScheduledImportButton' => 'RequestScheduledImport' ),
-	'post_action_parameters' => array( 'RequestScheduledImport' => array(
+	'post_actions' => array( 'BrowseActionName' ),
+	'single_post_actions' => array(
+		'BrowseButton' => 'Browse',
+		'RequestScheduledImportButton' => 'RequestScheduledImport'
+	),
+	'post_action_parameters' => array(
+		'RequestScheduledImport' => array(
 			'ImportHandler' => 'ImportHandler',
 			'ImportOptions' => 'ImportOptions',
+			'FileOptions' => 'FileOptions',
 			'ScheduledDate' => 'ScheduledDate',
 			'ScheduledHour' => 'ScheduledHour',
 			'ScheduledMinute' => 'ScheduledMinute',

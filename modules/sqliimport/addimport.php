@@ -17,6 +17,9 @@ $tpl = SQLIImportUtils::templateInit();
 $importINI = eZINI::instance( 'sqliimport.ini' );
 $http = eZHTTPTool::instance();
 
+$importHandler = $Module->hasActionParameter( 'ImportHandler' ) ? $Module->actionParameter( 'ImportHandler' ) : false;
+$importOptions = $Module->hasActionParameter( 'ImportOptions' ) ? $Module->actionParameter( 'ImportOptions' ) : false;
+
 try {
 	$userLimitations = SQLIImportUtils::getSimplifiedUserAccess( 'sqliimport', 'manageimports' );
 	$simplifiedLimitations = $userLimitations['simplifiedLimitations'];
@@ -28,17 +31,49 @@ try {
 		if ( !$hasAccess ) {
 			return $Module->handleError( eZError::KERNEL_ACCESS_DENIED, 'kernel' );
 		}
-
-		$importOptions = $Module->actionParameter( 'ImportOptions' );
+		
+		if ( $Module->hasActionParameter( 'FileOptions' ) ) {
+			foreach ( $Module->actionParameter( 'FileOptions' ) as $fileOption ) {
+				if ( eZHTTPFile::canFetch( 'UploadFile_' . $fileOption ) ) {
+					$binaryFile = eZHTTPFile::fetch( 'UploadFile_' . $fileOption );
+					$suffix = pathinfo( $binaryFile->attribute( 'original_filename' ), PATHINFO_EXTENSION );
+					$binaryFile->store( 'sqliimport', $suffix );
+					$importOptions[$fileOption] = $binaryFile->attribute( 'filename' );
+				}
+			}
+		}
+		foreach ( $importOptions as $index => $value ) {
+			if ( empty( $value ) ) {
+				unset( $importOptions[$index] );
+			}
+		}
+		
 		$pendingImport = new SQLIImportItem( array(
 			'handler' => $Module->actionParameter( 'ImportHandler' ),
 			'user_id' => eZUser::currentUserID()
 				) );
 		if ( $importOptions ) {
-			$pendingImport->setAttribute( 'options', SQLIImportHandlerOptions::fromText( $importOptions ) );
+			$pendingImport->setAttribute( 'options', new SQLIImportHandlerOptions( $importOptions ) );
 		}
 		$pendingImport->store();
 		$Module->redirectToView( 'list' );
+	} elseif ( $Module->isCurrentAction( 'SQIImportSelectNode' ) ) {
+		$selectedNodeIDArray = eZContentBrowse::result( 'SQIImportSelectNode' );
+		$nodeID = current( $selectedNodeIDArray );
+		if ( is_numeric( $nodeID ) ) {
+			$importHandler = $http->variable( 'handler' );
+			$importOptions[$http->variable( 'option' )] = $nodeID;
+		}
+	} elseif ( $Module->isCurrentAction( 'Browse' ) ) {
+		$handler = $http->postVariable( 'ImportHandler' );
+		$browseArray = $http->postVariable( 'BrowseButton' );
+		if ( key( $browseArray ) ) {
+			eZContentBrowse::browse( array( 'action_name' => 'SQIImportSelectNode',
+				'description_template' => false,
+				'persistent_data' => array( 'handler' => $handler, 'option' => key( $browseArray ) ),
+				'from_page' => "/sqliimport/addimport" ), $Module );
+			return;
+		}
 	}
 
 	$importHandlers = $importINI->variable( 'ImportSettings', 'AvailableSourceHandlers' );
@@ -59,6 +94,8 @@ try {
 		}
 	}
 
+	$tpl->setVariable( 'current_import_handler', $importHandler );
+	$tpl->setVariable( 'import_options', $importOptions );
 	$tpl->setVariable( 'importHandlers', $aValidHandlers );
 } catch ( Exception $e ) {
 	$errMsg = $e->getMessage();

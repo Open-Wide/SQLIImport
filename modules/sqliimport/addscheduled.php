@@ -19,19 +19,18 @@ try {
 	$simplifiedLimitations = $userLimitations['simplifiedLimitations'];
 	$scheduledImport = null;
 	$importID = null;
-	$currentImportHandler = null;
-	$importOptions = null;
+	$currentImportHandler = $Module->hasActionParameter( 'ImportHandler' ) ? $Module->actionParameter( 'ImportHandler' ) : null;
+	$importOptions = $Module->hasActionParameter( 'ImportOptions' ) ? $Module->actionParameter( 'ImportOptions' ) : null;
 	$importDate = date( 'Y-m-d' );
 	$importHour = date( 'H' );
 	$importMinute = 0;
 	$importFrequency = 'none';
-	$importLabel = null;
+	$importLabel = $Module->hasActionParameter( 'ScheduledLabel' ) ? $Module->actionParameter( 'ScheduledLabel' ) : null;
 	$importIsActive = true;
 	$manualFrequency = 0;
 
 	if ( $Module->isCurrentAction( 'RequestScheduledImport' ) ) {
 		// Check if user has access to handler alteration
-		$currentImportHandler = $Module->actionParameter( 'ImportHandler' );
 		$aLimitation = array( 'SQLIImport_Type' => $currentImportHandler );
 		$hasAccess = SQLIImportUtils::hasAccessToLimitation( $Module->currentModule(), 'manageimports', $aLimitation );
 		if ( !$hasAccess ) {
@@ -39,7 +38,6 @@ try {
 		}
 
 		$importID = (int) $Params['ScheduledImportID'];
-		$importOptions = $Module->actionParameter( 'ImportOptions' );
 		$importFrequency = $Module->actionParameter( 'ScheduledFrequency' );
 		$importLabel = $Module->actionParameter( 'ScheduledLabel' );
 		$importIsActive = $Module->actionParameter( 'ScheduledActive' ) ? 1 : 0;
@@ -77,14 +75,48 @@ try {
 		} else {
 			$scheduledImport->fromArray( $row );
 		}
-
+		if ( $Module->hasActionParameter( 'FileOptions' ) ) {
+			foreach ( $Module->actionParameter( 'FileOptions' ) as $fileOption ) {
+				if ( eZHTTPFile::canFetch( 'UploadFile_' . $fileOption ) ) {
+					$binaryFile = eZHTTPFile::fetch( 'UploadFile_' . $fileOption );
+					$suffix = pathinfo( $binaryFile->attribute( 'original_filename' ), PATHINFO_EXTENSION );
+					$binaryFile->store( 'sqliimport', $suffix );
+					$importOptions[$fileOption] = $binaryFile->attribute( 'filename' );
+				}
+			}
+		}
+		foreach ( $importOptions as $index => $value ) {
+			if ( empty( $value ) ) {
+				unset( $importOptions[$index] );
+			}
+		}
+		
 		if ( $importOptions ) {
-			$scheduledImport->setAttribute( 'options', SQLIImportHandlerOptions::fromText( $importOptions ) );
+			$scheduledImport->setAttribute( 'options', new SQLIImportHandlerOptions( $importOptions ) );
 		}
 
 		$scheduledImport->store();
 		$Module->redirectToView( 'scheduledlist' );
-	} else if ( $Params['ScheduledImportID'] ) {
+	} elseif ( $Module->isCurrentAction( 'SQIImportSelectNode' ) ) {
+		$selectedNodeIDArray = eZContentBrowse::result( 'SQIImportSelectNode' );
+		$nodeID = current( $selectedNodeIDArray );
+		if ( is_numeric( $nodeID ) ) {
+			$currentImportHandler = $http->variable( 'handler' );
+			$importOptions[$http->variable( 'option' )] = $nodeID;
+			$importLabel = $http->variable( 'label' );
+		}
+	} elseif ( $Module->isCurrentAction( 'Browse' ) ) {
+		$label = $http->postVariable( 'ScheduledLabel' );
+		$handler = $http->postVariable( 'ImportHandler' );
+		$browseArray = $http->postVariable( 'BrowseButton' );
+		if ( key( $browseArray ) ) {
+			eZContentBrowse::browse( array( 'action_name' => 'SQIImportSelectNode',
+				'description_template' => false,
+				'persistent_data' => array( 'handler' => $handler, 'option' => key( $browseArray ), 'label' => $label ),
+				'from_page' => "/sqliimport/addscheduled" ), $Module );
+			return;
+		}
+	} elseif ( $Params['ScheduledImportID'] ) {
 		$scheduledImport = SQLIScheduledImport::fetch( $Params['ScheduledImportID'] );
 		$importID = $Params['ScheduledImportID'];
 		$currentImportHandler = $scheduledImport->attribute( 'handler' );
@@ -96,7 +128,7 @@ try {
 			return $Module->handleError( eZError::KERNEL_ACCESS_DENIED, 'kernel' );
 		}
 
-		$importOptions = $scheduledImport->attribute( 'options' )->toText();
+		$importOptions = $scheduledImport->attribute( 'options' );
 		$nextTime = $scheduledImport->attribute( 'next' );
 		if ( !$nextTime ) {
 			$nextTime = $scheduledImport->attribute( 'requested_time' );
@@ -114,7 +146,6 @@ try {
 	eZDebug::writeError( $errMsg );
 	$tpl->setVariable( 'error_message', $errMsg );
 }
-
 $tpl->setVariable( 'import_id', $importID );
 $tpl->setVariable( 'current_import_handler', $currentImportHandler );
 $tpl->setVariable( 'import_options', $importOptions );

@@ -12,7 +12,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Options (facultative)</source>
+        <source>Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -179,8 +179,25 @@
     <message>
         <source>Import management list</source>
         <translation type="unfinished"></translation>
+	</message>
     <message>
         <source>Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View logs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -226,7 +243,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>SQLIPendingImport : Unknown attribute "%attribute"</source>
+        <source>SQLIPendingImport : Unknown attribute &quot;%attribute&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -238,7 +255,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unknown alter import action '%action'</source>
+        <source>Unknown alter import action  &apos;%action&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
