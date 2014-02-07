@@ -226,58 +226,59 @@ final class SQLIImportFactory {
 				$importHandler->initialize();
 				// Get process length to calculate advancement percentage to track advancement
 				$processLength = $importHandler->getProcessLength();
+				$isInterrupted = false;
 				if ( $processLength > 0 ) {
 					$percentageAdvancementStep = 100 / $processLength;
+
+					$handlerName = $importHandler->getHandlerName();
+					$handlerIdentifier = $importHandler->getHandlerIdentifier();
+
+					// Progress bar implementation
+					$progressBarOptions = array(
+						'emptyChar' => ' ',
+						'barChar' => '=',
+						'formatString' => "%act% / %max% [%bar%] %fraction%%  | ",
+					);
+					$progressBar = new ezcConsoleProgressbar( $this->output, $processLength, $progressBarOptions );
+					$progressBar->start();
+					$this->cli->warning( 'Now processing "' . $handlerName . '" handler.' );
+
+					while ( $row = $importHandler->getNextRow() ) {
+						try {
+							$progressBar->advance();
+							$startTime = time();
+							$importHandler->process( $row );
+						} catch ( Exception $e ) {
+							OWScriptLogger::logError( 'An error occurred during "' . $handlerIdentifier . '" import process : ' . $e->getMessage(), 'importfactory' );
+						}
+
+						$aImportItems[$i]->updateProgress( $percentageAdvancementStep, $importHandler->getProgressionNotes() );
+
+						// Now calculate process time for this iteration
+						$endTime = time();
+						$diffTime = $endTime - $startTime;
+						$oldProcessTime = $aImportItems[$i]->attribute( 'process_time' );
+						$aImportItems[$i]->setAttribute( 'process_time', $oldProcessTime + $diffTime );
+						$logger = OWScriptLogger::instance();
+						$aImportItems[$i]->setAttribute( 'running_log', $logger->attribute( 'id' ) );
+						$aImportItems[$i]->store( array( 'process_time' ) );
+
+						// Interruption handling
+						if ( $aImportItems[$i]->isInterrupted() ) {
+							$this->cli->notice();
+							OWScriptLogger::logNotice( 'Interruption has been requested for current import ! Cleaning and aborting process...', 'importfactory' );
+							$isInterrupted = true;
+							break;
+						}
+					}
+
+					$importHandler->cleanup();
+					$progressBar->finish();
+					$this->cli->notice();
+					unset( $importHandler );
 				} else {
-					$percentageAdvancementStep = 0;
+					OWScriptLogger::logNotice( 'No row to import', 'importfactory' );
 				}
-				$handlerName = $importHandler->getHandlerName();
-				$handlerIdentifier = $importHandler->getHandlerIdentifier();
-
-				// Progress bar implementation
-				$progressBarOptions = array(
-					'emptyChar' => ' ',
-					'barChar' => '=',
-					'formatString' => "%act% / %max% [%bar%] %fraction%%  | ",
-				);
-				$progressBar = new ezcConsoleProgressbar( $this->output, $processLength, $progressBarOptions );
-				$progressBar->start();
-				$this->cli->warning( 'Now processing "' . $handlerName . '" handler.' );
-
-				$isInterrupted = false;
-				while ( $row = $importHandler->getNextRow() ) {
-					try {
-						$progressBar->advance();
-						$startTime = time();
-						$importHandler->process( $row );
-					} catch ( Exception $e ) {
-						OWScriptLogger::logError( 'An error occurred during "' . $handlerIdentifier . '" import process : ' . $e->getMessage(), 'importfactory' );
-					}
-
-					$aImportItems[$i]->updateProgress( $percentageAdvancementStep, $importHandler->getProgressionNotes() );
-
-					// Now calculate process time for this iteration
-					$endTime = time();
-					$diffTime = $endTime - $startTime;
-					$oldProcessTime = $aImportItems[$i]->attribute( 'process_time' );
-					$aImportItems[$i]->setAttribute( 'process_time', $oldProcessTime + $diffTime );
-					$logger = OWScriptLogger::instance();
-					$aImportItems[$i]->setAttribute( 'running_log', $logger->attribute( 'id' ) );
-					$aImportItems[$i]->store( array( 'process_time' ) );
-
-					// Interruption handling
-					if ( $aImportItems[$i]->isInterrupted() ) {
-						$this->cli->notice();
-						OWScriptLogger::logNotice( 'Interruption has been requested for current import ! Cleaning and aborting process...', 'importfactory' );
-						$isInterrupted = true;
-						break;
-					}
-				}
-
-				$importHandler->cleanup();
-				$progressBar->finish();
-				$this->cli->notice();
-				unset( $importHandler );
 
 
 				if ( !$isInterrupted ) {
