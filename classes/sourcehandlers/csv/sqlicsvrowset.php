@@ -62,7 +62,7 @@ class SQLICSVRowSet implements ArrayAccess, Iterator, Countable {
 		while ( $data = fgetcsv( $fp, $options['csv_line_length'], $options['delimiter'], $options['enclosure'] ) ) {
 			//echo "Working on CSV row #$i\n";
 
-			if ( $i == 0 ) { // First line, handle headers
+			if ( $i == 0 && $options['as_object'] ) { // First line, handle headers
 				$set->setRowHeaders( $data );
 				$i++;
 				unset( $data );
@@ -70,15 +70,19 @@ class SQLICSVRowSet implements ArrayAccess, Iterator, Countable {
 			}
 
 			$aRowData = array();
-			$headers = $set->getHeaders();
-			for ( $j = 0, $jMax = count( $headers ); $j < $jMax; ++$j ) {
-				$aRowData[$headers[$j]] = $data[$j];
-			}
+			if ( $options['as_object'] ) {
+				$headers = $set->getHeaders();
+				for ( $j = 0, $jMax = count( $headers ); $j < $jMax; ++$j ) {
+					$aRowData[$headers[$j]] = $data[$j];
+				}
 
-			unset( $headers, $data );
-			$row = new SQLICSVRow( $aRowData );
-			$set->rows[] = $row;
-			unset( $aRowData );
+				unset( $headers, $data );
+				$row = new SQLICSVRow( $aRowData );
+				$set->rows[] = $row;
+				unset( $aRowData );
+			} else {
+				$set->rows[] = $data;
+			}
 			$i++;
 		}
 

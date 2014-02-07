@@ -27,7 +27,8 @@ class SQLICSVOptions extends SQLIImportOptions {
 			'csv_path' => null, // Path to CSV file
 			'delimiter' => ';', // Field delimiter (one character only)
 			'enclosure' => '"', // Field enclosure character (one character only)
-			'csv_line_length' => 100000, // CSV line length. Must be higher than the longest line in CSV file
+			'csv_line_length' => 100000, // CSV line length. Must be higher than the longest line in CSV file,
+			'as_object' => true
 		);
 
 		parent::__construct( $options );
