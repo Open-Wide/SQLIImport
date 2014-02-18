@@ -224,6 +224,9 @@ final class SQLIImportFactory {
 
 				$importHandler->handlerConfArray = $this->importINI->group( $handlerSection );
 				$importHandler->initialize();
+				$logger = OWScriptLogger::instance();
+				$aImportItems[$i]->setAttribute( 'running_log', $logger->attribute( 'id' ) );
+				$aImportItems[$i]->store();
 				// Get process length to calculate advancement percentage to track advancement
 				$processLength = $importHandler->getProcessLength();
 				$isInterrupted = false;
@@ -259,8 +262,6 @@ final class SQLIImportFactory {
 						$diffTime = $endTime - $startTime;
 						$oldProcessTime = $aImportItems[$i]->attribute( 'process_time' );
 						$aImportItems[$i]->setAttribute( 'process_time', $oldProcessTime + $diffTime );
-						$logger = OWScriptLogger::instance();
-						$aImportItems[$i]->setAttribute( 'running_log', $logger->attribute( 'id' ) );
 						$aImportItems[$i]->store( array( 'process_time' ) );
 
 						// Interruption handling
