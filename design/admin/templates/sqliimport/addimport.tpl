@@ -69,6 +69,7 @@
 		</div>
 	</div>
 </form>
+
 <div id="ImportHandlersOptions">
 	{foreach $importHandlers as $handlerName => $handler}
 		<div id="{$handler}-ImportHandlersOptions">
@@ -104,7 +105,7 @@
 							<select name="ImportOptions[{$option}]">
 								<option value=""></option>
 								{section var=class loop=$class_list}
-									<option value="{$class.identifier|wash}">{$class.name|wash}</option>
+									<option value="{$class.identifier|wash}" {if $import_options[$option]|eq($class.identifier)}selected="selected"{/if}>{$class.name|wash}</option>
 								{/section}
 							</select>
 							{/let}
@@ -112,6 +113,7 @@
 							{case match='file'}
 							{if $import_options[$option]}
 								<a href="/{$import_options[$option]}" target="_blank">{$import_options[$option]|wash()}</a>
+								<input name="ImportOptions[{$option}]" type="hidden" value="{$import_options[$option]}" />
 							{/if}
 							<input type="hidden" name="MAX_FILE_SIZE" value="0" />
 							<input type="hidden" name="FileOptions[]" value="{$option}" />

@@ -18,8 +18,18 @@ $importINI = eZINI::instance( 'sqliimport.ini' );
 $http = eZHTTPTool::instance();
 
 $importHandler = $Module->hasActionParameter( 'ImportHandler' ) ? $Module->actionParameter( 'ImportHandler' ) : false;
-$importOptions = $Module->hasActionParameter( 'ImportOptions' ) ? $Module->actionParameter( 'ImportOptions' ) : false;
-
+$importOptions = $Module->hasActionParameter( 'ImportOptions' ) ? $Module->actionParameter( 'ImportOptions' ) : array();
+if ( $http->hasPostVariable( 'FileOptions' ) ) {
+	foreach ( $http->postVariable( 'FileOptions' ) as $fileOption ) {
+		if ( eZHTTPFile::canFetch( 'UploadFile_' . $fileOption ) ) {
+			$binaryFile = eZHTTPFile::fetch( 'UploadFile_' . $fileOption );
+			$suffix = pathinfo( $binaryFile->attribute( 'original_filename' ), PATHINFO_EXTENSION );
+			$binaryFile->store( 'sqliimport', $suffix );
+			$importOptions[$fileOption] = $binaryFile->attribute( 'filename' );
+			//eZDebug::writeDebug( "set $fileOption", "sqliimport::addimport" );
+		}
+	}
+}
 try {
 	$userLimitations = SQLIImportUtils::getSimplifiedUserAccess( 'sqliimport', 'manageimports' );
 	$simplifiedLimitations = $userLimitations['simplifiedLimitations'];
@@ -31,23 +41,12 @@ try {
 		if ( !$hasAccess ) {
 			return $Module->handleError( eZError::KERNEL_ACCESS_DENIED, 'kernel' );
 		}
-		
-		if ( $Module->hasActionParameter( 'FileOptions' ) ) {
-			foreach ( $Module->actionParameter( 'FileOptions' ) as $fileOption ) {
-				if ( eZHTTPFile::canFetch( 'UploadFile_' . $fileOption ) ) {
-					$binaryFile = eZHTTPFile::fetch( 'UploadFile_' . $fileOption );
-					$suffix = pathinfo( $binaryFile->attribute( 'original_filename' ), PATHINFO_EXTENSION );
-					$binaryFile->store( 'sqliimport', $suffix );
-					$importOptions[$fileOption] = $binaryFile->attribute( 'filename' );
-				}
-			}
-		}
 		foreach ( $importOptions as $index => $value ) {
 			if ( empty( $value ) ) {
 				unset( $importOptions[$index] );
 			}
 		}
-		
+
 		$pendingImport = new SQLIImportItem( array(
 			'handler' => $Module->actionParameter( 'ImportHandler' ),
 			'user_id' => eZUser::currentUserID()
@@ -62,15 +61,22 @@ try {
 		$nodeID = current( $selectedNodeIDArray );
 		if ( is_numeric( $nodeID ) ) {
 			$importHandler = $http->variable( 'handler' );
+			//eZDebug::writeDebug( "Browse::result ". $http->variable( 'import_options' ), "sqliimport::addimport" );
+			parse_str( $http->variable( 'import_options' ), $importOptions );
 			$importOptions[$http->variable( 'option' )] = $nodeID;
 		}
 	} elseif ( $Module->isCurrentAction( 'Browse' ) ) {
 		$handler = $http->postVariable( 'ImportHandler' );
 		$browseArray = $http->postVariable( 'BrowseButton' );
 		if ( key( $browseArray ) ) {
+			$importOptions = array_merge( $http->postVariable( 'ImportOptions' ), $importOptions );
+			//eZDebug::writeDebug( "Browse ".http_build_query( $importOptions ), "sqliimport::addimport" );
 			eZContentBrowse::browse( array( 'action_name' => 'SQIImportSelectNode',
 				'description_template' => false,
-				'persistent_data' => array( 'handler' => $handler, 'option' => key( $browseArray ) ),
+				'persistent_data' => array(
+					'handler' => $handler,
+					'option' => key( $browseArray ),
+					'import_options' => http_build_query( $importOptions ) ),
 				'from_page' => "/sqliimport/addimport" ), $Module );
 			return;
 		}

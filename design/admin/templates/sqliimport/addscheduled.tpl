@@ -157,6 +157,7 @@
 							{case match='file'}
 							{if $import_options[$option]}
 								<a href="/{$import_options[$option]}" target="_blank">{$import_options[$option]|wash()}</a>
+								<input name="ImportOptions[{$option}]" type="hidden" value="{$import_options[$option]}" />
 							{/if}
 							<input type="hidden" name="MAX_FILE_SIZE" value="0" />
 							<input type="hidden" name="FileOptions[]" value="{$option}" />
