@@ -132,6 +132,7 @@
                                 $option|wash|ends_with( 'ClassIdentifier' ), 'classidentifier',
                                 $option|wash|ends_with( 'File' ), 'file',
                                 $option|wash|ends_with( 'Check' ), 'check',
+                                $option|wash|ends_with( 'Select' ), 'select',
                                 'other' )}
 							{case match='node'}
 							{let used_node=fetch( 'content', 'node', hash( 'node_id', $import_options[$option] ) )}
@@ -169,6 +170,16 @@
 								{/case}
 								{case}
 							<input type="text" name="ImportOptions[{$option}]" size="20" value="{$import_options[$option]|wash()}" />
+							{/case}
+							{case match='select'}
+							{let option_list=ezini( concat($handler, '-HandlerSettings'), $option , 'sqliimport.ini' )}
+							<select name="ImportOptions[{$option}]">
+								<option value=""></option>
+								{foreach $option_list as $identifier => $name}
+									<option value="{$identifier|wash}" {if $import_options[$option]|eq($identifier)}selected="selected"{/if}>{$name|wash}</option>
+								{/foreach}
+							</select>
+							{/let}
 							{/case}
 							{/switch}
 						</div>
