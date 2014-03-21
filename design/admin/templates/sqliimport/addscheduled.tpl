@@ -135,25 +135,25 @@
                                 $option|wash|ends_with( 'Select' ), 'select',
                                 'other' )}
 							{case match='node'}
-							{let used_node=fetch( 'content', 'node', hash( 'node_id', $import_options[$option] ) )}
+							{def $used_node=fetch( 'content', 'node', hash( 'node_id', $import_options[$option] ) )}
 							{if $used_node}
 								{$used_node.object.content_class.identifier|class_icon( small, $used_node.object.content_class.name|wash )}&nbsp;{$used_node.name|wash} ({$import_options[$option]})
 							{else}
 								{$import_options[$option]|wash()}
 							{/if}
-							{/let}
+							{undef $used_node}
 							<input type="submit" name="BrowseButton[{$option}]" value="{'Browse'|i18n( 'extension/sqliimport' )}" />
 							<input type="hidden" name="ImportOptions[{$option}]" value="{$import_options[$option]|wash()}">
 							{/case}
 							{case match='classidentifier'}
-							{let class_list=fetch( 'class', 'list', hash( 'sort_by', array( 'name', true() ) ) )}
+							{def $class_list=fetch( 'class', 'list', hash( 'sort_by', array( 'name', true() ) ) )}
 							<select name="ImportOptions[{$option}]">
 								<option value=""></option>
-								{section var=class loop=$class_list}
+								{foreach $class_list as $class}
 									<option value="{$class.identifier|wash}">{$class.name|wash}</option>
-								{/section}
+								{/foreach}
 							</select>
-							{/let}
+							{undef $class_list}
 							{/case}
 							{case match='file'}
 							{if $import_options[$option]}
@@ -172,14 +172,14 @@
 							<input type="text" name="ImportOptions[{$option}]" size="20" value="{$import_options[$option]|wash()}" />
 							{/case}
 							{case match='select'}
-							{let option_list=ezini( concat($handler, '-HandlerSettings'), $option , 'sqliimport.ini' )}
+							{def $option_list=ezini( concat($handler, '-HandlerSettings'), $option , 'sqliimport.ini' )}
 							<select name="ImportOptions[{$option}]">
 								<option value=""></option>
 								{foreach $option_list as $identifier => $name}
 									<option value="{$identifier|wash}" {if $import_options[$option]|eq($identifier)}selected="selected"{/if}>{$name|wash}</option>
 								{/foreach}
 							</select>
-							{/let}
+							{undef $option_list}
 							{/case}
 							{/switch}
 						</div>
