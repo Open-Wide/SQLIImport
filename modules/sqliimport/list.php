@@ -14,6 +14,19 @@ $Module = $Params['Module'];
 $Result = array();
 $tpl = SQLIImportUtils::templateInit();
 
+if( $Module->isCurrentAction( 'CopyImport' ) && $Module->hasActionParameter( 'ImportID' ) ) {
+    $import = SQLIImportItem::fetch($Module->actionParameter( 'ImportID' ) );
+    if($import ) {
+        $newImport = new SQLIImportItem( array(
+			'handler' => $import->attribute( 'handler' ),
+			'user_id' => eZUser::currentUserID(),
+			'options_serialized' => $import->attribute( 'options_serialized' ),
+			'type' => SQLIImportItem::TYPE_IMMEDIATE
+				) );
+		$newImport->store();
+    }
+}
+
 try
 {
     $offset = isset( $Params['UserParameters']['offset'] ) ? (int)$Params['UserParameters']['offset'] : 0; // Offset for pagination
