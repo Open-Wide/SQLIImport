@@ -60,8 +60,7 @@
 								<th>{"Type"|i18n( 'extension/sqliimport' )}</th>
 								<th>{"Status"|i18n( 'extension/sqliimport' )}</th>
 								<th>{"Progress"|i18n( 'extension/sqliimport' )}</th>
-								<th>{"Progression notes"|i18n( 'extension/sqliimport' )}</th>
-								<th>{"Duration"|i18n( 'extension/sqliimport' )}</th>
+								<th></th>
 							</tr>
 						</thead>
 
@@ -97,13 +96,13 @@
 												{/switch}
 											{/if}
 										</td>
-										<td>{$import.percentage}%</td>
-										<td>{if $import.status|lt(2)}
-											{$import.progression_notes}
-										{elseif $import.running_log}
+										<td>{$import.percentage}%<br />
+										{if $import.status|lt(2)}
+											{"Progression notes"|i18n( 'extension/sqliimport' )}: {$import.progression_notes}<br />
+										{/if}
 											<a href={concat('owscriptlogger/logs/',$import.running_log)|ezurl())} target="_blank">{'View logs'|i18n( 'extension/sqliimport' )}</a>
-										{/if}</td>
-									<td>{$import.process_time_formated.hour}h {$import.process_time_formated.minute}min {$import.process_time_formated.second}sec</td>
+										</td>
+									<td></td>
 								</tr>
 							{/foreach}
 						</tbody>
