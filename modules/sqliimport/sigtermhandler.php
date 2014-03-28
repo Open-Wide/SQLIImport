@@ -23,11 +23,14 @@ if ( $isPcntl ) {
 			switch ( $signo ) {
 				case SIGTERM:
 				case SIGINT:
+                    $db = eZDB::instance();
+                    $db->rollback();
 					OWScriptLogger::logNotice( 'Caught SIGTERM while importing. Demanding import interruption (might take a little while)', 'sigtermhandler' );
 					$factory = SQLIImportFactory::instance();
 					$currentItem = $factory->getCurrentImportItem();
 					$currentItem->setAttribute( 'status', SQLIImportItem::STATUS_INTERRUPTED );
 					$currentItem->store();
+                    SQLIImportToken::cleanAll();
 					break;
 			}
 		}
