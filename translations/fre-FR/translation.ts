@@ -200,6 +200,10 @@
         <source>No</source>
         <translation>Non</translation>
     </message>
+    <message>
+        <source>Create a new import from this one</source>
+        <translation>Créer un nouvel import à partir de celui là</translation>
+    </message>
 </context>
 <context>
     <name>extension/sqliimport/schedulefrequency</name>
