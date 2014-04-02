@@ -101,7 +101,7 @@
                                             {"Progression notes"|i18n( 'extension/sqliimport' )}: {$import.progression_notes}<br />
                                         {/if}
                                         {if $import.running_log}
-                                            <a href={concat('owscriplogger/logs/',$import.running_log)|ezurl())} target="_blank">{'View logs'|i18n( 'extension/sqliimport' )}</a>
+                                            <a href={concat('owscriplogger/logs/', $import.running_log)|ezurl()} target="_blank">{'View logs'|i18n( 'extension/sqliimport' )}</a>
                                         {/if}
                                     </td>
                                     <td>
