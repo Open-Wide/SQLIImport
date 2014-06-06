@@ -998,7 +998,7 @@ class SQLIXMLInputParser extends eZXMLInputParser {
 					if ( preg_match( "/^mailto:([^\?]*)(?:\?.*)?/i", $url, $mailAddr ) ) {
 						if ( !eZMail::validate( $mailAddr[1] ) ) {
 							$this->isInputValid = false;
-							if ( $this->errorLevel >= 0 ) {
+							if ( $this->ValidateErrorLevel >= 0 ) {
 								$this->Messages[] = SQLIImportUtils::translate( 'kernel/classes/datatypes/ezxmltext', "Invalid e-mail address: '%1'", false, array(
 											$mailAddr[1] ) );
 							}
