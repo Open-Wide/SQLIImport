@@ -25,6 +25,8 @@ Shown[browse]=true
 PolicyList[]=sqliimport/manageimports
 
 [Leftmenu_sqliimport]
+Links[]
+LinkNames[]
 Name=Import management
 Links[list]=sqliimport/list
 Links[scheduledlist]=sqliimport/scheduledlist
