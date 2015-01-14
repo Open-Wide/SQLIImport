@@ -17,11 +17,19 @@ Enabled[default]=true
 Enabled[browse]=false
 Enabled[edit]=false
 Shown[]
-Shown[default]=true
 Shown[navigation]=true
-Shown[browse]=false
+Shown[default]=false
+Shown[browse]=true
 
 # Tabs policy on admin interface in 4.3
 PolicyList[]=sqliimport/manageimports
 
+[Leftmenu_sqliimport]
+Links[]
+LinkNames[]
+Name=Import management
+Links[list]=sqliimport/list
+Links[scheduledlist]=sqliimport/scheduledlist
+Links[addimport]=sqliimport/addimport
+Links[purgelist]=sqliimport/purgelist
 */ ?>
