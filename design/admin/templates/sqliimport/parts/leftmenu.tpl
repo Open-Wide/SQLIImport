@@ -8,7 +8,7 @@
 
 <ul>
     <li><a href={'/sqliimport/list/'|ezurl}>{'Import list'|i18n( 'extension/sqliimport' )}</a></li>
-    <li><a href={'/sqliimport/scheduledlist'|ezurl}">{'Scheduled import(s)'|i18n( 'extension/sqliimport' )}</a></li>
+    <li><a href={'/sqliimport/scheduledlist'|ezurl}>{'Scheduled import(s)'|i18n( 'extension/sqliimport' )}</a></li>
     <li><a href={'/sqliimport/addimport'|ezurl}>{'Request a new immediate import'|i18n( 'extension/sqliimport' )}</a></li>
     <li><a onclick="return confirm('{'Are you sure you want purge to import history ?'|i18n( 'extension/sqliimport' )}')" href={'/sqliimport/purgelist'|ezurl}>{'Purge import history'|i18n( 'extension/sqliimport' )}</a></li>
 </ul>

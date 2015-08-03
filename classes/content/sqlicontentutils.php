@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing SQLIContentUtils class
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -14,6 +15,7 @@
  */
 class SQLIContentUtils
 {
+
     /**
      * Downloads a remote file in the temp folder defined in site.ini.
      * Returns the local path of the downloaded file.
@@ -33,17 +35,17 @@ class SQLIContentUtils
         $url = trim( $url );
         $ini = eZINI::instance();
         $importINI = eZINI::instance( 'sqliimport.ini' );
-        
-        $localPath = $ini->variable( 'FileSettings', 'TemporaryDir' ).'/'.basename( $url );
+
+        $localPath = $ini->variable( 'FileSettings', 'TemporaryDir' ) . '/' . basename( $url );
         $timeout = $importINI->variable( 'ImportSettings', 'StreamTimeout' );
 
         $ch = curl_init( $url );
         $fp = fopen( $localPath, 'w+' );
         curl_setopt( $ch, CURLOPT_HEADER, false );
         curl_setopt( $ch, CURLOPT_FILE, $fp );
-        curl_setopt( $ch, CURLOPT_TIMEOUT, (int)$timeout );
+        curl_setopt( $ch, CURLOPT_TIMEOUT, (int) $timeout );
         curl_setopt( $ch, CURLOPT_FAILONERROR, true );
-        if ( $debug )
+        if( $debug )
         {
             curl_setopt( $ch, CURLOPT_VERBOSE, true );
             curl_setopt( $ch, CURLOPT_NOPROGRESS, false );
@@ -51,44 +53,45 @@ class SQLIContentUtils
 
         // Should we use proxy ?
         $proxy = $ini->variable( 'ProxySettings', 'ProxyServer' );
-        if ( $proxy && $allowProxyUse )
+        if( $proxy && $allowProxyUse )
         {
             curl_setopt( $ch, CURLOPT_PROXY, $proxy );
             $userName = $ini->variable( 'ProxySettings', 'User' );
             $password = $ini->variable( 'ProxySettings', 'Password' );
-            if ( $userName )
+            if( $userName )
             {
                 curl_setopt( $ch, CURLOPT_PROXYUSERPWD, "$userName:$password" );
             }
         }
-        
+
         // Should we use HTTP Authentication ?
         if( is_array( $httpAuth ) )
         {
             if( count( $httpAuth ) != 2 )
-                throw new SQLIContentException( __METHOD__.' => HTTP Auth : Wrong parameter count in $httpAuth array' );
-            
+            {
+                throw new SQLIContentException( __METHOD__ . ' => HTTP Auth : Wrong parameter count in $httpAuth array' );
+            }
+
             list( $httpUser, $httpPassword ) = $httpAuth;
             curl_setopt( $ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY );
-            curl_setopt( $ch, CURLOPT_USERPWD, $httpUser.':'.$httpPassword );
+            curl_setopt( $ch, CURLOPT_USERPWD, $httpUser . ':' . $httpPassword );
         }
-        
+
         $result = curl_exec( $ch );
-        if ( $result === false )
+        if( $result === false )
         {
             $error = curl_error( $ch );
             $errorNum = curl_errno( $ch );
             curl_close( $ch );
             throw new SQLIContentException( "Failed downloading remote file '$url'. $error", $errorNum );
         }
-        
+
         curl_close( $ch );
         fclose( $fp );
 
-            
         return trim( $localPath );
     }
-    
+
     /**
      * Returns eZXML content to insert into XML blocks (ezxmltext datatype)
      * eZXML is generated from HTML content provided as argument
@@ -101,7 +104,8 @@ class SQLIContentUtils
         $htmlParser->setParseLineBreaks( true );
         $document = $htmlParser->process( $htmlContent );
         $richContent = eZXMLTextType::domString( $document );
-        
+
         return $richContent;
     }
+
 }

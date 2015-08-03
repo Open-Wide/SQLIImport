@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing SQLILocation class
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -8,21 +9,21 @@
  * @package sqliimport
  * @subpackage location
  */
-
 class SQLILocation
 {
+
     /**
      * Node
      * @var eZContentObjectTreeNode
      */
     protected $node;
-    
+
     /**
      * NodeID for this location
      * @var int
      */
     protected $nodeID;
-    
+
     /**
      * Protected constructor
      */
@@ -30,7 +31,7 @@ class SQLILocation
     {
         
     }
-    
+
     /**
      * Initializes a location from eZContentObjectTreeNode
      * @param eZContentObjectTreeNode $node
@@ -53,13 +54,15 @@ class SQLILocation
     public static function fromNodeID( $nodeID )
     {
         $node = eZContentObjectTreeNode::fetch( $nodeID );
-        if ( !$node instanceof eZContentObjectTreeNode )
+        if( !$node instanceof eZContentObjectTreeNode )
+        {
             throw new SQLILocationException( "Unable to find eZContentObjectTreeNode with NodeID #$nodeID" );
-        
+        }
+
         $location = self::fromNode( $node );
         return $location;
     }
-    
+
     /**
      * Returns location NodeID
      * @return int
@@ -68,7 +71,7 @@ class SQLILocation
     {
         return $this->nodeID;
     }
-    
+
     /**
      * Getter
      * Returns given attribute for current content node if it exists (ie. path_string).
@@ -82,19 +85,22 @@ class SQLILocation
     {
         $this->getNode();
         $ret = null;
-        
+
         switch( $name )
         {
             default:
-                if ( $this->node->hasAttribute( $name ) )
+                if( $this->node->hasAttribute( $name ) )
+                {
                     $ret = $this->node->attribute( $name );
-                else
+                } else
+                {
                     throw new ezcBasePropertyNotFoundException( $name );
+                }
         }
-        
+
         return $ret;
     }
-    
+
     /**
      * Setter
      * Sets value to an attribute for the content node.
@@ -108,7 +114,7 @@ class SQLILocation
     public function __set( $name, $value )
     {
         $this->getNode();
-        
+
         if( !$this->node->hasAttribute( $name ) )
         {
             throw new ezcBasePropertyNotFoundException( $name );
@@ -116,7 +122,7 @@ class SQLILocation
 
         $this->node->setAttribute( $name, $value );
     }
-    
+
     /**
      * Check if given attribute exists.
      * All "classic" attributes can be used (See {@link eZContentObjectTreeNode::definition()}).
@@ -126,10 +132,10 @@ class SQLILocation
     public function __isset( $name )
     {
         $this->getNode();
-        
+
         return $this->node->hasAttribute( $name );
     }
-    
+
     /**
      * Generic method for calling current content node methods.
      * If method isn't implemented, will throw an exception
@@ -141,25 +147,32 @@ class SQLILocation
     public function __call( $method, $arguments )
     {
         $this->getNode();
-        
-        if ( method_exists( $this->node, $method ) )
+
+        if( method_exists( $this->node, $method ) )
+        {
             return call_user_func_array( array( $this->node, $method ), $arguments );
-        else
+        } else
+        {
             throw new ezcBasePropertyNotFoundException( $method );
+        }
     }
-    
+
     /**
      * Fetches internal node if not already available
      * @throws SQLILocationException
      * @return void
      */
-    protected function getNode()
+    public function getNode()
     {
-        if ( !$this->node instanceof eZContentObjectTreeNode )
+        if( !$this->node instanceof eZContentObjectTreeNode )
         {
             $this->node = eZContentObjectTreeNode::fetch( $this->nodeID );
-            if ( !$this->node instanceof eZContentObjectTreeNode )
+            if( !$this->node instanceof eZContentObjectTreeNode )
+            {
                 throw new SQLILocationException( "Unable to find eZContentObjectTreeNode with NodeID #$this->nodeID" );
+            }
         }
+        return $this->node;
     }
+
 }

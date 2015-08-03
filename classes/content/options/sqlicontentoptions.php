@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SQLIContentOptions
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -15,18 +16,19 @@
  */
 class SQLIContentOptions extends SQLIImportOptions
 {
+
     public function __construct( array $options = array() )
     {
         // Define some default values
         $this->properties = array(
-            'remote_id'         => null,
-            'section_id'        => 0,
-            'creator_id'        => false,
-            'language'          => eZContentObject::defaultLanguage(),
-            'class_identifier'  => null
-            // TODO : Implement states
+            'remote_id' => null,
+            'section_id' => 0,
+            'creator_id' => false,
+            'language' => eZContentObject::defaultLanguage(),
+            'class_identifier' => null
+                // TODO : Implement states
         );
-        
+
         parent::__construct( $options );
     }
 
@@ -47,4 +49,5 @@ class SQLIContentOptions extends SQLIImportOptions
     {
         parent::__set( $optionName, $optionValue );
     }
+
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing ISQLIDiffHandler class
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -26,6 +27,7 @@
  */
 interface ISQLIDiffHandler
 {
+
     /**
      * Checks if content has been really modified for $field
      * Returns true if content has been modified, false otherwise

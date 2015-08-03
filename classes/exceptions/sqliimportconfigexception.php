@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SQLIImportConfigException
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -13,5 +14,5 @@
  */
 class SQLIImportConfigException extends SQLIImportBaseException
 {
-     
+    
 }

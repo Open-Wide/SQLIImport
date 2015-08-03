@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing SQLICSVDoc class
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -17,23 +18,24 @@
  */
 class SQLICSVDoc
 {
+
     /**
      * Pointer to CSV file
      * @var resource
      */
     protected $csvFile;
-    
+
     /**
      * @var SQLICSVOptions
      */
     protected $options;
-    
+
     /**
      * Rows of CSV File
      * @var SQLICSVRowSet
      */
     public $rows;
-    
+
     /**
      * Constructor.
      * Will throw an exception if CSV file does not exist or is invalid
@@ -44,12 +46,13 @@ class SQLICSVDoc
     {
         $this->options = $options;
         $csvPath = $options['csv_path'];
-        
+
         if( !file_exists( $csvPath ) )
-            throw new SQLICSVException( "CSV file $csvPath does not exist");
-        
+        {
+            throw new SQLICSVException( "CSV file $csvPath does not exist" );
+        }
     }
-    
+
     /**
      * Parses CSV File
      * @throws SQLICSVException
@@ -60,11 +63,14 @@ class SQLICSVDoc
         eZDebug::accumulatorStart( 'sqlicsvdoc_loading', 'sqlicsvdoc', 'Loading CSV file in memory' );
         $this->csvFile = @fopen( $this->options['csv_path'], 'r' );
         if( !$this->csvFile )
+        {
             throw new SQLICSVException( "Cannot open CSV file '{$this->options['csv_path']}' for reading" );
-        
+        }
+
         $this->rows = SQLICSVRowSet::fromCSVFile( $this->csvFile, $this->options );
         eZDebug::accumulatorStop( 'sqlicsvdoc_loading' );
-        
+
         return $this;
     }
+
 }

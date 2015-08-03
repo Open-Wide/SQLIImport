@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing SQLIBinaryFileDiffHandler class
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -16,6 +17,7 @@
  */
 class SQLIBinaryFileDiffHandler implements ISQLIDiffHandler
 {
+
     /**
      * (non-PHPdoc)
      * @see extension/sqliimport/classes/content/diffhandlers/ISQLIDiffHandler::contentIsModified()
@@ -23,12 +25,15 @@ class SQLIBinaryFileDiffHandler implements ISQLIDiffHandler
     public static function contentIsModified( $data, eZContentObjectAttribute $attribute )
     {
         $isModified = false;
-        
+
         $originalFilename = $attribute->attribute( 'content' )->attribute( 'original_filename' );
-        $newFilename = basename( (string)$data );
+        $newFilename = basename( (string) $data );
         if( $newFilename != $originalFilename )
+        {
             $isModified = true;
-            
+        }
+
         return $isModified;
     }
+
 }

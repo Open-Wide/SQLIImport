@@ -12,8 +12,8 @@
         <translation>Pilote d&apos;import</translation>
     </message>
     <message>
-        <source>Options (facultative)</source>
-        <translation>Options (facultatif)</translation>
+        <source>Options</source>
+        <translation>Options</translation>
     </message>
     <message>
         <source>One option per line : optionName=optionValue</source>
@@ -179,6 +179,30 @@
     <message>
         <source>Import management list</source>
         <translation>Liste des imports</translation>
+    </message>
+    <message>
+        <source>Details</source>
+        <translation>Détails</translation>
+    </message>
+    <message>
+        <source>View logs</source>
+        <translation>Voir les logs</translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation>Parcourir</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>Oui</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>Non</translation>
+    </message>
+    <message>
+        <source>Create a new import from this one</source>
+        <translation>Créer un nouvel import à partir de celui là</translation>
     </message>
 </context>
 <context>

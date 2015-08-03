@@ -17,7 +17,7 @@ $cli->notice();
 $cli->notice( 'Available locales for this object : ' );
 foreach( $content->fields as $locale => $fieldset )
 {
-    $cli->notice( $locale.' - '.$fieldset->getLanguage() );
+    $cli->notice( $locale . ' - ' . $fieldset->getLanguage() );
 }
 
 $cli->notice();
@@ -26,7 +26,7 @@ $cli->notice();
 // ===== CONTENT EDITING
 // =================================================
 
-$cli->notice( 'Now publishing new version of object #'.$objectID.' (NodeID #'.$nodeID.')' );
+$cli->notice( 'Now publishing new version of object #' . $objectID . ' (NodeID #' . $nodeID . ')' );
 $content->fields['eng-US']->author = 'Oscar Wilde';
 $content->fields['fre-FR']->author = 'Victor Hugo';
 $content->fields['fre-FR']->name = 'Test FR5';

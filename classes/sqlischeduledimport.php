@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing SQLIScheduledImport class
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -7,28 +8,28 @@
  * @version @@@VERSION@@@
  * @package sqliimport
  */
-
 class SQLIScheduledImport extends eZPersistentObject
 {
+
     const FREQUENCY_NONE = 'none',
-          FREQUENCY_HOURLY = 'hourly',
-          FREQUENCY_DAILY = 'daily',
-          FREQUENCY_WEEKLY = 'weekly',
-          FREQUENCY_MONTHLY = 'monthly',
-          FREQUENCY_MANUAL = 'manual';
-    
+            FREQUENCY_HOURLY = 'hourly',
+            FREQUENCY_DAILY = 'daily',
+            FREQUENCY_WEEKLY = 'weekly',
+            FREQUENCY_MONTHLY = 'monthly',
+            FREQUENCY_MANUAL = 'manual';
+
     /**
      * Options for import
      * @var SQLIImportHandlerOptions
      */
     protected $options;
-    
+
     /**
      * User who requested the import
      * @var eZUser
      */
     protected $user;
-    
+
     /**
      * Constructor
      * @param array $row
@@ -37,7 +38,7 @@ class SQLIScheduledImport extends eZPersistentObject
     {
         parent::eZPersistentObject( $row );
     }
-    
+
     /**
      * Schema definition
      * eZPersistentObject implementation for sqliimport_scheduled table
@@ -46,72 +47,62 @@ class SQLIScheduledImport extends eZPersistentObject
      */
     public static function definition()
     {
-        return array( 'fields'       => array( 'id'                      => array( 'name'     => 'id',
-                                                                                   'datatype' => 'integer',
-                                                                                   'default'  => null,
-                                                                                   'required' => true ),
-
-                                               'label'                   => array( 'name'     => 'label',
-                                                                                   'datatype' => 'string',
-                                                                                   'default'  => null,
-                                                                                   'required' => true ),
-        
-                                               'handler'                 => array( 'name'     => 'handler',
-                                                                                   'datatype' => 'string',
-                                                                                   'default'  => null,
-                                                                                   'required' => true ),
-
-                                               'options_serialized'      => array( 'name'     => 'options_serialized',
-                                                                                   'datatype' => 'string',
-                                                                                   'default'  => null,
-                                                                                   'required' => false ),
-        
-                                               'frequency'               => array( 'name'     => 'frequency',
-                                                                                   'datatype' => 'string',
-                                                                                   'default'  => null,
-                                                                                   'required' => true ),
-        
-                                               'next'                    => array( 'name'     => 'next',
-                                                                                   'datatype' => 'integer',
-                                                                                   'default'  => 0,
-                                                                                   'required' => false ),
-        
-                                               'user_id'             => array( 'name'     => 'user_id',
-                                                                               'datatype' => 'integer',
-                                                                               'default'  => null,
-                                                                               'required' => true ),
-
-                                               'requested_time'      => array( 'name'     => 'requested_time',
-                                                                               'datatype' => 'integer',
-                                                                               'default'  => time(),
-                                                                               'required' => false ),
-        
-                                               'is_active'           => array( 'name'     => 'is_active',
-                                                                               'datatype' => 'integer',
-                                                                               'default'  => 0,
-                                                                               'required' => false ),
-        
-                                               'manual_frequency'    => array( 'name'     => 'manual_frequency',
-                                                                               'datatype' => 'integer',
-                                                                               'default'  => 0,
-                                                                               'required' => true ),
-                                            ),
-                                            
-                      'keys'                 => array( 'id' ),
-                      'increment_key'        => 'id',
-                      'class_name'           => 'SQLIScheduledImport',
-                      'name'                 => 'sqliimport_scheduled',
-                      'function_attributes'  => array( 'options'            => 'getOptions',
-                                                       'user'               => 'getUser',
-                                                       'handler_name'       => 'getHandlerName',
-                                                       'status_string'      => 'getStatusString',
-                                                       'user_has_access'    => 'userHasAccess',
-                                                       'full_frequency'     => 'getFullFrequency' ),
-                      'set_functions'        => array( 'options'        => 'setOptions',
-                                                       'user'           => 'setUser' )
+        return array( 'fields' => array( 'id' => array( 'name' => 'id',
+                    'datatype' => 'integer',
+                    'default' => null,
+                    'required' => true ),
+                'label' => array( 'name' => 'label',
+                    'datatype' => 'string',
+                    'default' => null,
+                    'required' => true ),
+                'handler' => array( 'name' => 'handler',
+                    'datatype' => 'string',
+                    'default' => null,
+                    'required' => true ),
+                'options_serialized' => array( 'name' => 'options_serialized',
+                    'datatype' => 'string',
+                    'default' => null,
+                    'required' => false ),
+                'frequency' => array( 'name' => 'frequency',
+                    'datatype' => 'string',
+                    'default' => null,
+                    'required' => true ),
+                'next' => array( 'name' => 'next',
+                    'datatype' => 'integer',
+                    'default' => 0,
+                    'required' => false ),
+                'user_id' => array( 'name' => 'user_id',
+                    'datatype' => 'integer',
+                    'default' => null,
+                    'required' => true ),
+                'requested_time' => array( 'name' => 'requested_time',
+                    'datatype' => 'integer',
+                    'default' => time(),
+                    'required' => false ),
+                'is_active' => array( 'name' => 'is_active',
+                    'datatype' => 'integer',
+                    'default' => 0,
+                    'required' => false ),
+                'manual_frequency' => array( 'name' => 'manual_frequency',
+                    'datatype' => 'integer',
+                    'default' => 0,
+                    'required' => true ),
+            ),
+            'keys' => array( 'id' ),
+            'increment_key' => 'id',
+            'class_name' => 'SQLIScheduledImport',
+            'name' => 'sqliimport_scheduled',
+            'function_attributes' => array( 'options' => 'getOptions',
+                'user' => 'getUser',
+                'handler_name' => 'getHandlerName',
+                'status_string' => 'getStatusString',
+                'user_has_access' => 'userHasAccess',
+                'full_frequency' => 'getFullFrequency' ),
+            'set_functions' => array( 'options' => 'setOptions',
+                'user' => 'setUser' )
         );
     }
-    
+
     /**
      * Universal getter
      * @param string $name
@@ -121,7 +112,7 @@ class SQLIScheduledImport extends eZPersistentObject
     {
         return $this->attribute( $name );
     }
-    
+
     /**
      * Generic toString method
      */
@@ -129,21 +120,21 @@ class SQLIScheduledImport extends eZPersistentObject
     {
         return $this->attribute( 'label' );
     }
-    
+
     /**
      * Get options
      * @return SQLIImportHandlerOptions
      */
     public function getOptions()
     {
-        if ( !$this->options instanceof SQLIImportHandlerOptions && $this->attribute( 'options_serialized' ) )
+        if( !$this->options instanceof SQLIImportHandlerOptions && $this->attribute( 'options_serialized' ) )
             $this->options = unserialize( $this->attribute( 'options_serialized' ) );
         else
             $this->options = new SQLIImportHandlerOptions();
-            
+
         return $this->options;
     }
-    
+
     /**
      * Options setter
      * @param SQLIImportHandlerOptions $options
@@ -153,19 +144,19 @@ class SQLIScheduledImport extends eZPersistentObject
         $this->options = $options;
         $this->setAttribute( 'options_serialized', serialize( $options ) );
     }
-    
+
     /**
      * Returns user who requested the import
      * @return eZUser
      */
     public function getUser()
     {
-        if ( !$this->user instanceof eZUser )
+        if( !$this->user instanceof eZUser )
             $this->user = eZUser::fetch( $this->attribute( 'user_id' ) );
-        
+
         return $this->user;
     }
-    
+
     /**
      * User setter
      * @param eZUser $user
@@ -175,7 +166,7 @@ class SQLIScheduledImport extends eZPersistentObject
         $this->user = $user;
         $this->setAttribute( 'user_id', $user->attribute( 'contentobject_id' ) );
     }
-    
+
     /**
      * Returns import handler intelligible name as set in sqliimport.ini
      * @return string
@@ -183,12 +174,12 @@ class SQLIScheduledImport extends eZPersistentObject
     public function getHandlerName()
     {
         $importINI = eZINI::instance( 'sqliimport.ini' );
-        $handlerSection = $this->attribute( 'handler' ).'-HandlerSettings';
+        $handlerSection = $this->attribute( 'handler' ) . '-HandlerSettings';
         $handlerName = $importINI->hasVariable( $handlerSection, 'Name' ) ? $importINI->variable( $handlerSection, 'Name' ) : $this->attribute( 'handler' );
-        
+
         return $handlerName;
     }
-    
+
     /**
      * Fetches scheduled import
      * @param int $offset Offset. Default is 0.
@@ -202,13 +193,13 @@ class SQLIScheduledImport extends eZPersistentObject
             $aLimit = null;
         else
             $aLimit = array( 'offset' => $offset, 'length' => $limit );
-        
+
         $sort = array( 'requested_time' => 'asc' );
         $aImports = self::fetchObjectList( self::definition(), null, $conds, $sort, $aLimit );
-        
+
         return $aImports;
     }
-    
+
     /**
      * Fetches a scheduled import by its ID
      * @param int $importID
@@ -219,7 +210,7 @@ class SQLIScheduledImport extends eZPersistentObject
         $import = self::fetchObject( self::definition(), null, array( 'id' => $importID ) );
         return $import;
     }
-    
+
     /**
      * Sets attributes from an associative array (key = attribute name)
      * @param array $attributes
@@ -232,7 +223,7 @@ class SQLIScheduledImport extends eZPersistentObject
                 $this->setAttribute( $attributeName, $attribute );
         }
     }
-    
+
     /**
      * Updates next import date depending on frequency.
      * If frequency is set to 'none', entry will be removed
@@ -241,12 +232,11 @@ class SQLIScheduledImport extends eZPersistentObject
     {
         $db = eZDB::instance();
         $db->begin();
-        
+
         if( $this->attribute( 'frequency' ) == self::FREQUENCY_NONE )
         {
             $this->remove();
-        }
-        else
+        } else
         {
             $nextTimeInterval = null;
             // Determine next import interval
@@ -255,42 +245,42 @@ class SQLIScheduledImport extends eZPersistentObject
                 case self::FREQUENCY_HOURLY :
                     $nextTimeInterval = '+1 hour';
                     break;
-                
+
                 case self::FREQUENCY_DAILY :
                     $nextTimeInterval = '+1 day';
                     break;
-    
+
                 case self::FREQUENCY_WEEKLY :
                     $nextTimeInterval = '+1 week';
                     break;
-    
+
                 case self::FREQUENCY_MONTHLY :
                     $nextTimeInterval = '+1 month';
                     break;
-                    
+
                 case self::FREQUENCY_MANUAL : // Manual frequency value is in minutes
-                    $nextTimeInterval = '+'.$this->attribute( 'manual_frequency' ).' minutes';
+                    $nextTimeInterval = '+' . $this->attribute( 'manual_frequency' ) . ' minutes';
                     break;
-    
+
                 default :
                     return;
                     break;
             }
-            
+
             $currentTime = time();
             $nextTime = $this->attribute( 'next' );
-            while( $nextTime <= $currentTime )
+            while($nextTime <= $currentTime)
             {
                 $nextTime = strtotime( $nextTimeInterval, $nextTime );
             }
-            
+
             $this->setAttribute( 'next', $nextTime );
             $this->store( array( 'next' ) );
         }
-        
+
         $db->commit();
     }
-    
+
     /**
      * Checks if current user has access to import item management (edit, remove...)
      * @return bool
@@ -300,10 +290,10 @@ class SQLIScheduledImport extends eZPersistentObject
         // Check if user has access to handler alteration
         $aLimitation = array( 'SQLIImport_Type' => $this->attribute( 'handler' ) );
         $userHasAccess = SQLIImportUtils::hasAccessToLimitation( 'sqliimport', 'manageimports', $aLimitation );
-        
+
         return $userHasAccess;
     }
-    
+
     /**
      * Returns "full" frequency
      * @return string
@@ -314,13 +304,14 @@ class SQLIScheduledImport extends eZPersistentObject
         switch( $this->attribute( 'frequency' ) )
         {
             case self::FREQUENCY_MANUAL :
-                $freq = $this->attribute( 'frequency' ) . ' ('.$this->attribute( 'manual_frequency' ).' '.SQLIImportUtils::translate( 'extension/sqliimport', 'Minutes' ).')';
+                $freq = $this->attribute( 'frequency' ) . ' (' . $this->attribute( 'manual_frequency' ) . ' ' . SQLIImportUtils::translate( 'extension/sqliimport', 'Minutes' ) . ')';
                 break;
-                
+
             default:
                 $freq = $this->attribute( 'frequency' );
         }
-        
+
         return $freq;
     }
+
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing SQLILocationException class
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved

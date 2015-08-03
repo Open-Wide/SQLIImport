@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing SQLIDefaultDiffHandler class
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -17,6 +18,7 @@
  */
 class SQLIDefaultDiffHandler implements ISQLIDiffHandler
 {
+
     /**
      * (non-PHPdoc)
      * @see extension/sqliimport/classes/content/diffhandlers/ISQLIDiffHandler::contentIsModified()
@@ -25,10 +27,13 @@ class SQLIDefaultDiffHandler implements ISQLIDiffHandler
     {
         $isModified = false;
         $attributeValue = SQLIContentField::convertAttributeToString( $attribute );
-        
-        if( (string)$data != $attributeValue )
+
+        if( (string) $data != $attributeValue )
+        {
             $isModified = true;
-        
+        }
+
         return $isModified;
     }
+
 }

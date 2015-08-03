@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing SQLICSVRow class
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -9,9 +10,9 @@
  * @subpackage sourcehandlers
  * @subpackage csv
  */
-
 class SQLICSVRow implements Iterator
 {
+
     /**
      * Fields for this row.
      * Associative array, indexed by camelized field name.
@@ -122,4 +123,5 @@ class SQLICSVRow implements Iterator
     {
         return isset( $this->fields[current( $this->iteratorPointer )] );
     }
+
 }

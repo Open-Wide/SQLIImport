@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing SQLICSVOptions class
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -9,9 +10,9 @@
  * @subpackage sourcehandlers
  * @subpackage csv
  */
-
 class SQLICSVOptions extends SQLIImportOptions
 {
+
     /**
      * Constructor.
      * Available options are :
@@ -25,15 +26,16 @@ class SQLICSVOptions extends SQLIImportOptions
     {
         // Define some default values
         $this->properties = array(
-            'csv_path'         => null, // Path to CSV file
-            'delimiter'        => ';', // Field delimiter (one character only)
-            'enclosure'        => '"', // Field enclosure character (one character only)
-            'csv_line_length'  => 100000, // CSV line length. Must be higher than the longest line in CSV file
+            'csv_path' => null, // Path to CSV file
+            'delimiter' => ';', // Field delimiter (one character only)
+            'enclosure' => '"', // Field enclosure character (one character only)
+            'csv_line_length' => 100000, // CSV line length. Must be higher than the longest line in CSV file,
+            'as_object' => true
         );
-        
+
         parent::__construct( $options );
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see extension/sqliimport/classes/options/SQLIImportOptions::__set()
@@ -42,4 +44,5 @@ class SQLICSVOptions extends SQLIImportOptions
     {
         parent::__set( $optionName, $optionValue );
     }
+
 }

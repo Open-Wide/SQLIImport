@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SQLIImportBaseException
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -7,9 +8,10 @@
  * @version @@@VERSION@@@
  * @package sqliimport
  */
-
 class SQLIImportBaseException extends ezcBaseException
 {
+
     const IMPORT_ALREADY_RUNNING = -1,
-          UNDEFINED_HANDLERS = -2;
+            UNDEFINED_HANDLERS = -2;
+
 }

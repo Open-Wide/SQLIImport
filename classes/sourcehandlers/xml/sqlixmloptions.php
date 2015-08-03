@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing SQLIXMLOptions class
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -9,12 +10,12 @@
  * @subpackage sourcehandlers
  * @subpackage xml
  */
-
 class SQLIXMLOptions extends SQLIImportOptions
 {
+
     const XML_PARSER_DOM = 'dom',
-          XML_PARSER_SIMPLEXML = 'simplexml';
-    
+            XML_PARSER_SIMPLEXML = 'simplexml';
+
     /**
      * Constructor.
      * Available options are :
@@ -29,13 +30,13 @@ class SQLIXMLOptions extends SQLIImportOptions
     {
         // Define some default values
         $this->properties = array(
-            'xml_path'          => null, // Path to XML file or stream
-            'xml_string'        => null, // XML String. May be used if xml_path is not provided
-            'xml_parser'        => 'dom', // XML Parser, may be "dom" or "simplexml". DOM is default
-            'timeout'           => eZINI::instance( 'sqliimport.ini' )->variable( 'ImportSettings', 'StreamTimeout' ), // Timeout in seconds for the distant call
-            'xsd'               => null, // XSD file allowing to validate XML stream
+            'xml_path' => null, // Path to XML file or stream
+            'xml_string' => null, // XML String. May be used if xml_path is not provided
+            'xml_parser' => 'dom', // XML Parser, may be "dom" or "simplexml". DOM is default
+            'timeout' => eZINI::instance( 'sqliimport.ini' )->variable( 'ImportSettings', 'StreamTimeout' ), // Timeout in seconds for the distant call
+            'xsd' => null, // XSD file allowing to validate XML stream
         );
-        
+
         parent::__construct( $options );
     }
 
@@ -47,4 +48,5 @@ class SQLIXMLOptions extends SQLIImportOptions
     {
         parent::__set( $optionName, $optionValue );
     }
+
 }

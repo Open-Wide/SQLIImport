@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing SQLIImportItem class
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -14,31 +15,30 @@
  */
 class SQLIImportItem extends eZPersistentObject
 {
+
     const ACTION_PENDING_IMPORT = 'sqliimport_pending';
-    
     const STATUS_PENDING = 0,
-          STATUS_RUNNING = 1,
-          STATUS_FAILED = 2,
-          STATUS_COMPLETED = 3,
-          STATUS_CANCELED = 4,
-          STATUS_INTERRUPTED = 5;
-          
+            STATUS_RUNNING = 1,
+            STATUS_FAILED = 2,
+            STATUS_COMPLETED = 3,
+            STATUS_CANCELED = 4,
+            STATUS_INTERRUPTED = 5;
     const TYPE_IMMEDIATE = 1,
-          TYPE_SCHEDULED = 2;
-    
+            TYPE_SCHEDULED = 2;
+
     /**
      * Internal eZPendingActions object
      * @var eZPendingActions
      * @internal
      */
     protected $pendingAction;
-    
+
     /**
      * Options for import
      * @var SQLIImportHandlerOptions
      */
     protected $options;
-    
+
     /**
      * User who requested the import
      * @var eZUser
@@ -47,78 +47,72 @@ class SQLIImportItem extends eZPersistentObject
 
     public static function definition()
     {
-        return array( 'fields'       => array( 'id'                   => array( 'name'     => 'id',
-                                                                                'datatype' => 'integer',
-                                                                                'default'  => null,
-                                                                                'required' => true ),
-
-                                               'handler'             => array( 'name'     => 'handler',
-                                                                               'datatype' => 'string',
-                                                                               'default'  => null,
-                                                                               'required' => true ),
-
-                                               'options_serialized'  => array( 'name'     => 'options_serialized',
-                                                                               'datatype' => 'string',
-                                                                               'default'  => null,
-                                                                               'required' => false ),
-
-                                               'user_id'             => array( 'name'     => 'user_id',
-                                                                               'datatype' => 'integer',
-                                                                               'default'  => null,
-                                                                               'required' => true ),
-
-                                               'requested_time'      => array( 'name'     => 'requested_time',
-                                                                               'datatype' => 'integer',
-                                                                               'default'  => time(),
-                                                                               'required' => false ),
-
-                                               'status'              => array( 'name'     => 'status',
-                                                                               'datatype' => 'integer',
-                                                                               'default'  => 0,
-                                                                               'required' => false ),
-
-                                               'percentage_int'      => array( 'name'     => 'percentage',
-                                                                               'datatype' => 'integer',
-                                                                               'default'  => 0,
-                                                                               'required' => false),
-        
-                                               'type'                => array( 'name'     => 'type',
-                                                                               'datatype' => 'integer',
-                                                                               'default'  => 1,
-                                                                               'required' => true),
-        
-                                               'progression_notes'   => array( 'name'     => 'progression_notes',
-                                                                               'datatype' => 'string',
-                                                                               'default'  => null,
-                                                                               'required' => false ),
-        
-                                               'process_time'        => array( 'name'     => 'process_time',
-                                                                               'datatype' => 'integer',
-                                                                               'default'  => 0,
-                                                                               'required' => true ),
-        
-                                               'scheduled_id'        => array( 'name'     => 'scheduled_id',
-                                                                               'datatype' => 'integer',
-                                                                               'default'  => null,
-                                                                               'required' => false )
-                                            ),
-                                            
-                      'keys'                 => array( 'id' ),
-                      'increment_key'        => 'id',
-                      'class_name'           => 'SQLIImportItem',
-                      'name'                 => 'sqliimport_item',
-                      'function_attributes'  => array( 'options'                    => 'getOptions',
-                                                       'user'                       => 'getUser',
-                                                       'handler_name'               => 'getHandlerName',
-                                                       'status_string'              => 'getStatusString',
-                                                       'percentage'                 => 'getPercentage',
-                                                       'type_string'                => 'getTypeString',
-                                                       'user_has_access'            => 'userHasAccess',
-                                                       'process_time_formated'      => 'getFormatedProcessTime',
-                                                       'scheduled_import'			=> 'getScheduledImport' ),
-                      'set_functions'        => array( 'options'        => 'setOptions',
-                                                       'user'           => 'setUser',
-                                                       'percentage'     => 'setPercentage' )
+        return array( 'fields' => array( 'id' => array( 'name' => 'id',
+                    'datatype' => 'integer',
+                    'default' => null,
+                    'required' => true ),
+                'handler' => array( 'name' => 'handler',
+                    'datatype' => 'string',
+                    'default' => null,
+                    'required' => true ),
+                'options_serialized' => array( 'name' => 'options_serialized',
+                    'datatype' => 'string',
+                    'default' => null,
+                    'required' => false ),
+                'user_id' => array( 'name' => 'user_id',
+                    'datatype' => 'integer',
+                    'default' => null,
+                    'required' => true ),
+                'requested_time' => array( 'name' => 'requested_time',
+                    'datatype' => 'integer',
+                    'default' => time(),
+                    'required' => false ),
+                'status' => array( 'name' => 'status',
+                    'datatype' => 'integer',
+                    'default' => 0,
+                    'required' => false ),
+                'percentage_int' => array( 'name' => 'percentage',
+                    'datatype' => 'integer',
+                    'default' => 0,
+                    'required' => false ),
+                'type' => array( 'name' => 'type',
+                    'datatype' => 'integer',
+                    'default' => 1,
+                    'required' => true ),
+                'progression_notes' => array( 'name' => 'progression_notes',
+                    'datatype' => 'string',
+                    'default' => null,
+                    'required' => false ),
+                'running_log' => array( 'name' => 'running_log',
+                    'datatype' => 'string',
+                    'default' => null,
+                    'required' => false ),
+                'process_time' => array( 'name' => 'process_time',
+                    'datatype' => 'integer',
+                    'default' => 0,
+                    'required' => true ),
+                'scheduled_id' => array( 'name' => 'scheduled_id',
+                    'datatype' => 'integer',
+                    'default' => null,
+                    'required' => false )
+            ),
+            'keys' => array( 'id' ),
+            'increment_key' => 'id',
+            'class_name' => 'SQLIImportItem',
+            'name' => 'sqliimport_item',
+            'function_attributes' => array( 'options' => 'getOptions',
+                'user' => 'getUser',
+                'handler_name' => 'getHandlerName',
+                'status_string' => 'getStatusString',
+                'percentage' => 'getPercentage',
+                'type_string' => 'getTypeString',
+                'user_has_access' => 'userHasAccess',
+                'process_time_formated' => 'getFormatedProcessTime',
+                'scheduled_import' => 'getScheduledImport',
+                'running_log_messages' => 'getRunningLogMessages' ),
+            'set_functions' => array( 'options' => 'setOptions',
+                'user' => 'setUser',
+                'percentage' => 'setPercentage' )
         );
     }
 
@@ -133,15 +127,15 @@ class SQLIImportItem extends eZPersistentObject
         foreach( $attributes as $attrName => $attrValue )
         {
             if( isset( $this->attributesHolder[$attrName] ) )
+            {
                 $this->attributesHolder[$attrName] = $attrValue;
-            else
-                throw new SQLIImportRuntimeException( SQLIImportUtils::translate( 'extension/sqliimport/error',
-                                                                                  'SQLIPendingImport : Unknown attribute "%attribute"',
-                                                                                   null,
-                                                                                   $attrName ) );
+            } else
+            {
+                throw new SQLIImportRuntimeException( SQLIImportUtils::translate( 'extension/sqliimport/error', 'SQLIPendingImport : Unknown attribute "%attribute"', null, $attrName ) );
+            }
         }
     }
-    
+
     /**
      * Universal getter
      * @param string $name
@@ -151,23 +145,27 @@ class SQLIImportItem extends eZPersistentObject
     {
         $ret = null;
         if( $this->hasAttribute( $name ) )
+        {
             $ret = $this->attribute( $name );
-            
+        }
+
         return $ret;
     }
-    
+
     /**
      * Get options
      * @return SQLIImportHandlerOptions
      */
     public function getOptions()
     {
-        if ( !$this->options instanceof SQLIImportHandlerOptions && $this->attribute( 'options_serialized' ) )
+        if( !$this->options instanceof SQLIImportHandlerOptions && $this->attribute( 'options_serialized' ) )
+        {
             $this->options = unserialize( $this->attribute( 'options_serialized' ) );
-            
+        }
+
         return $this->options;
     }
-    
+
     /**
      * Options setter
      * @param SQLIImportHandlerOptions $options
@@ -177,19 +175,21 @@ class SQLIImportItem extends eZPersistentObject
         $this->options = $options;
         $this->setAttribute( 'options_serialized', serialize( $options ) );
     }
-    
+
     /**
      * Returns user who requested the import
      * @return eZUser
      */
     public function getUser()
     {
-        if ( !$this->user instanceof eZUser )
+        if( !$this->user instanceof eZUser )
+        {
             $this->user = eZUser::fetch( $this->attribute( 'user_id' ) );
-        
+        }
+
         return $this->user;
     }
-    
+
     /**
      * User setter
      * @param eZUser $user
@@ -199,7 +199,7 @@ class SQLIImportItem extends eZPersistentObject
         $this->user = $user;
         $this->setAttribute( 'user_id', $user->attribute( 'contentobject_id' ) );
     }
-    
+
     /**
      * Returns import handler intelligible name as set in sqliimport.ini
      * @return string
@@ -207,12 +207,12 @@ class SQLIImportItem extends eZPersistentObject
     public function getHandlerName()
     {
         $importINI = eZINI::instance( 'sqliimport.ini' );
-        $handlerSection = $this->attribute( 'handler' ).'-HandlerSettings';
+        $handlerSection = $this->attribute( 'handler' ) . '-HandlerSettings';
         $handlerName = $importINI->hasVariable( $handlerSection, 'Name' ) ? $importINI->variable( $handlerSection, 'Name' ) : $this->attribute( 'handler' );
-        
+
         return $handlerName;
     }
-    
+
     /**
      * Fetches pending imports
      * @return SQLIImportItem[]
@@ -220,14 +220,14 @@ class SQLIImportItem extends eZPersistentObject
     public static function fetchPendingList()
     {
         $conds = array(
-            'status'    => self::STATUS_PENDING
+            'status' => self::STATUS_PENDING
         );
         $sort = array( 'requested_time' => 'asc' );
         $aFinalPending = self::fetchObjectList( self::definition(), null, $conds, $sort );
-        
+
         return $aFinalPending;
     }
-    
+
     /**
      * Fetches import items
      * @param int $offset Offset. Default is 0.
@@ -238,16 +238,19 @@ class SQLIImportItem extends eZPersistentObject
     public static function fetchList( $offset = 0, $limit = 0, $conds = null )
     {
         if( !$limit )
+        {
             $aLimit = null;
-        else
+        } else
+        {
             $aLimit = array( 'offset' => $offset, 'length' => $limit );
-        
+        }
+
         $sort = array( 'requested_time' => 'desc' );
         $aImports = self::fetchObjectList( self::definition(), null, $conds, $sort, $aLimit );
-        
+
         return $aImports;
     }
-    
+
     /**
      * Fetches an Import Item by its ID
      * @param int $importID
@@ -267,15 +270,17 @@ class SQLIImportItem extends eZPersistentObject
     public static function fetchRunning( $handlerIdentifier = null )
     {
         $conds = array(
-            'status'    => self::STATUS_RUNNING
+            'status' => self::STATUS_RUNNING
         );
         if( $handlerIdentifier )
+        {
             $conds['handler'] = $handlerIdentifier;
-        
+        }
+
         $runningImports = self::fetchObjectList( self::definition(), null, $conds );
         return $runningImports;
     }
-    
+
     /**
      * Returns intelligible status as string
      * @return string
@@ -288,31 +293,31 @@ class SQLIImportItem extends eZPersistentObject
             case self::STATUS_PENDING:
                 $statusString = 'Pending';
                 break;
-                
+
             case self::STATUS_RUNNING:
                 $statusString = 'Running';
                 break;
-            
+
             case self::STATUS_FAILED:
                 $statusString = 'Failed';
                 break;
-                
+
             case self::STATUS_COMPLETED:
                 $statusString = 'Completed';
                 break;
-                
+
             case self::STATUS_CANCELED:
                 $statusString = 'Canceled';
                 break;
-                
+
             case self::STATUS_INTERRUPTED:
                 $statusString = 'Interrupted';
                 break;
         }
-        
+
         return $statusString;
     }
-    
+
     /**
      * Updates import progress
      * @param float  $progressPercentage Percentage of advancement
@@ -324,9 +329,11 @@ class SQLIImportItem extends eZPersistentObject
         $percentage = $this->attribute( 'percentage' ) + $progressPercentage;
         $this->setAttribute( 'percentage', $percentage );
         $this->setAttribute( 'progression_notes', $progressionNotes );
+        $logger = OWScriptLogger::instance();
+        $this->setAttribute( 'running_log', $logger->attribute( 'id' ) );
         $this->store( array( 'percentage_int', 'progression_notes' ) ); // Only stores those fields in order not to overwrite others (like 'status')
     }
-    
+
     /**
      * Returns real progress percentage as float.
      * Percentage is stored as INT in DB (real percentage * 100), for convenience.
@@ -336,7 +343,7 @@ class SQLIImportItem extends eZPersistentObject
     {
         return $this->attribute( 'percentage_int' ) / 100;
     }
-    
+
     /**
      * Updates percentage
      * Will round $percentage (precision = 2) and multiply result by 100.
@@ -348,7 +355,7 @@ class SQLIImportItem extends eZPersistentObject
         $percentage = round( $percentage, 2 );
         $this->setAttribute( 'percentage_int', $percentage * 100 );
     }
-    
+
     /**
      * Get intelligible type string
      * @return string
@@ -361,15 +368,15 @@ class SQLIImportItem extends eZPersistentObject
             case self::TYPE_IMMEDIATE:
                 $typeString = 'Immediate';
                 break;
-                
+
             case self::TYPE_SCHEDULED:
                 $typeString = 'Scheduled';
                 break;
         }
-        
+
         return $typeString;
     }
-    
+
     /**
      * Creates a new pending import from a scheduled one
      * @param SQLIScheduledImport $scheduledImport
@@ -378,16 +385,16 @@ class SQLIImportItem extends eZPersistentObject
     public static function fromScheduledImport( SQLIScheduledImport $scheduledImport )
     {
         $pendingImport = new self( array(
-            'handler'               => $scheduledImport->attribute( 'handler' ),
-            'user_id'               => $scheduledImport->attribute( 'user_id' ),
-            'options_serialized'    => $scheduledImport->attribute( 'options_serialized' ),
-            'type'                  => self::TYPE_SCHEDULED
-        ) );
+            'handler' => $scheduledImport->attribute( 'handler' ),
+            'user_id' => $scheduledImport->attribute( 'user_id' ),
+            'options_serialized' => $scheduledImport->attribute( 'options_serialized' ),
+            'type' => self::TYPE_SCHEDULED
+                ) );
         $pendingImport->store();
-        
+
         return $pendingImport;
     }
-    
+
     /**
      * Checks if current import has been interrupted by a user in the admin.
      * @return bool
@@ -398,11 +405,13 @@ class SQLIImportItem extends eZPersistentObject
         $conds = array( 'id' => $this->attribute( 'id' ) );
         $ret = parent::fetchObject( self::definition(), array( 'status' ), $conds, false );
         if( $ret && $ret['status'] == self::STATUS_INTERRUPTED )
+        {
             $isInterrupted = true;
-        
+        }
+
         return $isInterrupted;
     }
-    
+
     /**
      * Purges import history
      */
@@ -410,18 +419,18 @@ class SQLIImportItem extends eZPersistentObject
     {
         $db = eZDB::instance();
         $conds = array(
-            'status'        => array( array(
-                self::STATUS_COMPLETED,
-                self::STATUS_FAILED,
-                self::STATUS_CANCELED,
-                self::STATUS_INTERRUPTED
-            ) )
+            'status' => array( array(
+                    self::STATUS_COMPLETED,
+                    self::STATUS_FAILED,
+                    self::STATUS_CANCELED,
+                    self::STATUS_INTERRUPTED
+                ) )
         );
         $db->begin();
         self::removeObject( self::definition(), $conds );
         $db->commit();
     }
-    
+
     /**
      * Checks if current user has access to import item management (edit, remove...)
      * @return bool
@@ -431,7 +440,7 @@ class SQLIImportItem extends eZPersistentObject
         // Check if user has access to handler alteration
         $aLimitation = array( 'SQLIImport_Type' => $this->attribute( 'handler' ) );
         $userHasAccess = SQLIImportUtils::hasAccessToLimitation( 'sqliimport', 'manageimports', $aLimitation );
-        
+
         return $userHasAccess;
     }
 
@@ -443,13 +452,13 @@ class SQLIImportItem extends eZPersistentObject
     public function getFormatedProcessTime()
     {
         $aTime = array(
-            'hour'      => (int)( $this->attribute( 'process_time' ) / eZTime::SECONDS_AN_HOUR ),
-            'minute'    => (int)( ( $this->attribute( 'process_time' ) % eZTime::SECONDS_AN_HOUR ) / eZTime::SECONDS_A_MINUTE ),
-            'second'    => (int)( $this->attribute( 'process_time' ) % eZTime::SECONDS_A_MINUTE )
+            'hour' => (int) ( $this->attribute( 'process_time' ) / eZTime::SECONDS_AN_HOUR ),
+            'minute' => (int) ( ( $this->attribute( 'process_time' ) % eZTime::SECONDS_AN_HOUR ) / eZTime::SECONDS_A_MINUTE ),
+            'second' => (int) ( $this->attribute( 'process_time' ) % eZTime::SECONDS_A_MINUTE )
         );
         return $aTime;
     }
-    
+
     /**
      * Returns related scheduled import if it exists, or null if not
      * @return SQLIScheduledImport
@@ -461,7 +470,13 @@ class SQLIImportItem extends eZPersistentObject
         {
             $scheduledImport = SQLIScheduledImport::fetch( $this->attribute( 'scheduled_id' ) );
         }
-        
+
         return $scheduledImport;
     }
+
+    public function getRunningLogMessages()
+    {
+        return unserialize( $this->attribute( 'running_log' ) );
+    }
+
 }

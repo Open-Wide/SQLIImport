@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SIGTERM Handler.
  * This piece of code allows to catch system signals such as SIGTERM, SIGINT or SIGKILL
@@ -11,13 +12,12 @@
  * @version @@@VERSION@@@
  * @package sqliimport
  */
-
 $isPcntl = function_exists( 'pcntl_signal' );
 if( $isPcntl )
 {
     declare( ticks = 1 );
-    
-    function sigHandler( $signo )
+
+    function SQLIImportSignalHandler( $signo )
     {
         if( SQLIImportToken::importIsRunning() )
         {
@@ -27,16 +27,22 @@ if( $isPcntl )
             {
                 case SIGTERM:
                 case SIGINT:
-                    SQLIImportLogger::logNotice( 'Caught SIGTERM while importing. Demanding import interruption (might take a little while)' );
+                    $db = eZDB::instance();
+                    $db->rollback();
+                    OWScriptLogger::logNotice( 'Caught SIGTERM while importing. Demanding import interruption (might take a little while)', 'sigtermhandler' );
                     $factory = SQLIImportFactory::instance();
                     $currentItem = $factory->getCurrentImportItem();
                     $currentItem->setAttribute( 'status', SQLIImportItem::STATUS_INTERRUPTED );
                     $currentItem->store();
+                    SQLIImportToken::cleanAll();
                     break;
             }
         }
     }
-    
-    pcntl_signal( SIGTERM, 'sigHandler' );
-    pcntl_signal( SIGINT, 'sigHandler' );
+
+    if( !function_exists( 'OWScriptLoggerSignalHandler' ) )
+    {
+        pcntl_signal( SIGTERM, 'SQLIImportSignalHandler' );
+        pcntl_signal( SIGINT, 'SQLIImportSignalHandler' );
+    }
 }

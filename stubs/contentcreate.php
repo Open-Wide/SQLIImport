@@ -1,15 +1,17 @@
 <?php
+
 include __DIR__ . '/scriptinit.php';
+
 eZINI::instance()->setVariable( 'ContentSettings', 'ViewCaching', 'disabled' );
 
 $cli->notice( 'Creation of a new "comment" object' );
 $options = new SQLIContentOptions( array(
-    'class_identifier'      => 'comment',
-    'remote_id'             => 'my_ubber_cool_remote_id',
-    'language'              => 'fre-FR'
-) );
+    'class_identifier' => 'comment',
+    'remote_id' => 'my_ubber_cool_remote_id',
+    'language' => 'fre-FR'
+        ) );
 $comment = SQLIContent::create( $options );
-$cli->notice( 'Current version : '.$comment->current_version );
+$cli->notice( 'Current version : ' . $comment->current_version );
 $comment->fields->subject = 'Mon super sujet';
 $comment->fields->author = 'Moi !';
 $comment->fields->message = 'Le commentaire de la mort';
@@ -25,12 +27,12 @@ $comment->addLocation( SQLILocation::fromNodeID( 43 ) );
 $publisher = SQLIContentPublisher::getInstance();
 $publisher->publish( $comment );
 
-$cli->notice( 'Current version : '.$comment->current_version );
+$cli->notice( 'Current version : ' . $comment->current_version );
 
 // Loop against locations
 foreach( $comment->locations as $nodeID => $location )
 {
-    $cli->notice( $nodeID.' => '.$location->path_string.' ('.$comment->locations[$nodeID]->path_identification_string.')' );
+    $cli->notice( $nodeID . ' => ' . $location->path_string . ' (' . $comment->locations[$nodeID]->path_identification_string . ')' );
 }
 
 $script->shutdown();

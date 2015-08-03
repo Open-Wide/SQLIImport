@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing demo import handler SQLIRSSImportHandler
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -8,13 +9,11 @@
  * @package sqliimport
  * @subpackage sourcehandlers
  */
-
 class SQLIRSSImportHandler extends SQLIImportAbstractHandler implements ISQLIImportHandler
 {
+
     protected $rowIndex = 0;
-    
     protected $rowCount;
-    
     protected $currentGUID;
 
     /**
@@ -24,10 +23,10 @@ class SQLIRSSImportHandler extends SQLIImportAbstractHandler implements ISQLIImp
     public function __construct( SQLIImportHandlerOptions $options = null )
     {
         parent::__construct( $options );
-        $this->remoteIDPrefix = $this->getHandlerIdentifier().'-';
+        $this->remoteIDPrefix = $this->getHandlerIdentifier() . '-';
         $this->currentRemoteIDPrefix = $this->remoteIDPrefix;
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see extension/sqliimport/classes/sourcehandlers/ISQLIImportHandler::initialize()
@@ -36,13 +35,13 @@ class SQLIRSSImportHandler extends SQLIImportAbstractHandler implements ISQLIImp
     {
         $rssFeedUrl = $this->handlerConfArray['RSSFeed'];
         $xmlOptions = new SQLIXMLOptions( array(
-            'xml_path'      => $rssFeedUrl,
-            'xml_parser'    => 'simplexml'
-        ) );
+            'xml_path' => $rssFeedUrl,
+            'xml_parser' => 'simplexml'
+                ) );
         $xmlParser = new SQLIXMLParser( $xmlOptions );
         $this->dataSource = $xmlParser->parse();
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see extension/sqliimport/classes/sourcehandlers/ISQLIImportHandler::getProcessLength()
@@ -55,7 +54,7 @@ class SQLIRSSImportHandler extends SQLIImportAbstractHandler implements ISQLIImp
         }
         return $this->rowCount;
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see extension/sqliimport/classes/sourcehandlers/ISQLIImportHandler::getNextRow()
@@ -66,12 +65,11 @@ class SQLIRSSImportHandler extends SQLIImportAbstractHandler implements ISQLIImp
         {
             $row = $this->dataSource->channel->item[$this->rowIndex];
             $this->rowIndex++;
-        }
-        else
+        } else
         {
             $row = false; // We must return false if we already processed all rows
         }
-        
+
         return $row;
     }
 
@@ -84,26 +82,24 @@ class SQLIRSSImportHandler extends SQLIImportAbstractHandler implements ISQLIImp
         // $row is a SimpleXMLElement object
         $this->currentGUID = $row->guid;
         $contentOptions = new SQLIContentOptions( array(
-            'class_identifier'      => 'article',
-            'remote_id'             => (string)$row->guid
-        ) );
+            'class_identifier' => 'article',
+            'remote_id' => (string) $row->guid
+                ) );
         $content = SQLIContent::create( $contentOptions );
-        $content->fields->title = (string)$row->title;
-        $content->fields->author = (string)$row->author.'|noreply@sqli.com|-1'; // @see eZAuthorType::fromString()
-        
+        $content->fields->title = (string) $row->title;
+        $content->fields->author = (string) $row->author . '|noreply@sqli.com|-1'; // @see eZAuthorType::fromString()
         // Handle HTML content
-        $content->fields->intro = $this->getRichContent( (string)$row->description ); // Proxy method to SQLIContentUtils::getRichContent()
-        
+        $content->fields->intro = $this->getRichContent( (string) $row->description ); // Proxy method to SQLIContentUtils::getRichContent()
         // Now publish content
         $content->addLocation( SQLILocation::fromNodeID( $this->handlerConfArray['DefaultParentNodeID'] ) );
         $publisher = SQLIContentPublisher::getInstance();
         $publisher->publish( $content );
-        
+
         // Free some memory. Internal methods eZContentObject::clearCache() and eZContentObject::resetDataMap() will be called
         // @see SQLIContent::__destruct()
         unset( $content );
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see extension/sqliimport/classes/sourcehandlers/ISQLIImportHandler::cleanup()
@@ -113,7 +109,7 @@ class SQLIRSSImportHandler extends SQLIImportAbstractHandler implements ISQLIImp
         // Nothing to clean up
         return;
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see extension/sqliimport/classes/sourcehandlers/ISQLIImportHandler::getHandlerName()
@@ -122,7 +118,7 @@ class SQLIRSSImportHandler extends SQLIImportAbstractHandler implements ISQLIImp
     {
         return 'RSS Import Handler';
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see extension/sqliimport/classes/sourcehandlers/ISQLIImportHandler::getHandlerIdentifier()
@@ -131,13 +127,14 @@ class SQLIRSSImportHandler extends SQLIImportAbstractHandler implements ISQLIImp
     {
         return 'rssimporthandler';
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see extension/sqliimport/classes/sourcehandlers/ISQLIImportHandler::getProgressionNotes()
      */
     public function getProgressionNotes()
     {
-        return 'Currently importing : '.$this->currentGUID;
+        return 'Currently importing : ' . $this->currentGUID;
     }
+
 }

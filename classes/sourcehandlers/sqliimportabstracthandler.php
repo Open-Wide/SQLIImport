@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Abstract class for all import handlers
  * All import handlers must inherit from this class
@@ -9,46 +10,46 @@
  * @package sqliimport
  * @subpackage sourcehandlers
  */
-
 abstract class SQLIImportAbstractHandler
 {
+
     /**
      * eZINI instance for sqliimport.ini
      * @var eZINI
      */
     protected $importINI;
-    
+
     /**
      * eZCLI instance
      * @var eZCLI
      */
     protected $cli;
-    
+
     /**
      * RemoteID prefix to be used for content created by current handler
      * @var string
      */
     protected $remoteIDPrefix;
-    
+
     /**
      * Current remote ID prefix. Can be useful when creating content hierarchy
      * @var string
      */
     protected $currentRemoteIDPrefix;
-    
+
     /**
      * Flag indicating if debug is activated or not. Default is false
      * @var bool
      */
     protected $debug = false;
-    
+
     /**
      * Flag indicating if at least one error has been detected during import for this handler.
      * Default is false
      * @var bool
      */
     protected $hasError = false;
-    
+
     /**
      * Array containing configuration for current handler
      * as defined in sqliimport.ini.
@@ -56,19 +57,19 @@ abstract class SQLIImportAbstractHandler
      * @var array
      */
     public $handlerConfArray = array();
-    
+
     /**
      * Data source (CSV, XML...)
      * @var SQLICSVDoc|DOMDocument|SimpleXMLIterator
      */
     protected $dataSource;
-    
+
     /**
      * Options provided from command line
      * @var SQLIImportHandlerOptions
      */
     protected $options;
-    
+
     /**
      * Progression notes
      * @see extension/sqliimport/classes/sourcehandlers/ISQLIImportHandler::getProgressionNotes()
@@ -85,8 +86,9 @@ abstract class SQLIImportAbstractHandler
         $this->importINI = eZINI::instance( 'sqliimport.ini' );
         $this->cli = eZCLI::instance();
         $this->options = $options;
+        OWScriptLogger::startLog( $this->getHandlerIdentifier() );
     }
-    
+
     /**
      * Downloads a remote file in the temp folder defined in site.ini.
      * Returns the local path of the downloaded file.
@@ -101,7 +103,7 @@ abstract class SQLIImportAbstractHandler
     {
         return SQLIContentUtils::getRemoteFile( $url, $httpAuth, $this->debug );
     }
-    
+
     /**
      * Returns eZXML content to insert into XML blocks (ezxmltext datatype)
      * eZXML is generated from HTML content provided as argument
@@ -113,4 +115,5 @@ abstract class SQLIImportAbstractHandler
     {
         return SQLIContentUtils::getRichContent( $htmlContent );
     }
+
 }

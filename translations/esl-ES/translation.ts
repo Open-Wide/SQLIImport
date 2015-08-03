@@ -12,7 +12,7 @@
         <translation>Controlador de la importación</translation>
     </message>
     <message>
-        <source>Options (facultative)</source>
+        <source>Options</source>
         <translation>Opciones (facultativo)</translation>
     </message>
     <message>
@@ -179,6 +179,30 @@
     <message>
         <source>Import management list</source>
         <translation>Lista de importaciones </translation>
+    </message>
+    <message>
+        <source>Details</source>
+        <translation>Detalles</translation>
+    </message>
+    <message>
+        <source>View logs</source>
+        <translation>Ver los registros</translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation>Navegar</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>Sí</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>No</translation>
+    </message>
+    <message>
+        <source>Create a new import from this one</source>
+        <translation>Create tiene new importación from this one</translation>
     </message>
 </context>
 <context>

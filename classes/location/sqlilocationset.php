@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing SQLILocationSet class
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -8,23 +9,23 @@
  * @package sqliimport
  * @subpackage location
  */
-
 class SQLILocationSet implements ArrayAccess, Iterator
 {
+
     /**
      * Locations.
      * Array of SQLILocation, indexed by NodeID
      * @var SQLILocation[]
      */
     protected $locations = array();
-        
+
     /**
      * Internal iterator pointer for Iterator implementation
      * @internal
      * @var array
      */
     protected $iteratorPointer = array();
-    
+
     /**
      * Constructor
      */
@@ -49,8 +50,10 @@ class SQLILocationSet implements ArrayAccess, Iterator
     public function offsetGet( $offset )
     {
         if( !isset( $this->locations[$offset] ) )
-            throw new SQLILocationException( __METHOD__." => Location with NodeID #$offset not defined in this location set" );
-        
+        {
+            throw new SQLILocationException( __METHOD__ . " => Location with NodeID #$offset not defined in this location set" );
+        }
+
         return $this->locations[$offset];
     }
 
@@ -60,7 +63,7 @@ class SQLILocationSet implements ArrayAccess, Iterator
      */
     public function offsetSet( $offset, $value )
     {
-        throw new SQLILocationException( __METHOD__.' => Fieldset direct value assignment not allowed' );
+        throw new SQLILocationException( __METHOD__ . ' => Fieldset direct value assignment not allowed' );
     }
 
     /**
@@ -71,9 +74,9 @@ class SQLILocationSet implements ArrayAccess, Iterator
      */
     public function offsetUnset( $offset )
     {
-         throw new SQLILocationException( __METHOD__.' => Fieldset unset not allowed' );
+        throw new SQLILocationException( __METHOD__ . ' => Fieldset unset not allowed' );
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see Iterator::current()
@@ -82,7 +85,7 @@ class SQLILocationSet implements ArrayAccess, Iterator
     {
         return $this->locations[current( $this->iteratorPointer )];
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see Iterator::key()
@@ -91,7 +94,7 @@ class SQLILocationSet implements ArrayAccess, Iterator
     {
         return current( $this->iteratorPointer );
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see Iterator::next()
@@ -100,7 +103,7 @@ class SQLILocationSet implements ArrayAccess, Iterator
     {
         next( $this->iteratorPointer );
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see Iterator::rewind()
@@ -109,7 +112,7 @@ class SQLILocationSet implements ArrayAccess, Iterator
     {
         reset( $this->iteratorPointer );
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see Iterator::valid()
@@ -118,7 +121,7 @@ class SQLILocationSet implements ArrayAccess, Iterator
     {
         return isset( $this->locations[current( $this->iteratorPointer )] );
     }
-    
+
     /**
      * Initializes internal iterator pointer
      * @internal
@@ -127,7 +130,7 @@ class SQLILocationSet implements ArrayAccess, Iterator
     {
         $this->iteratorPointer = array_keys( $this->locations );
     }
-    
+
     /**
      * Adds a new location to the location set
      * @param SQLILocation $location
@@ -137,5 +140,5 @@ class SQLILocationSet implements ArrayAccess, Iterator
         $this->locations[$location->attribute( 'node_id' )] = $location;
         $this->initIterator();
     }
-}
 
+}

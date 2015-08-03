@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing SQLICSVException class
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -9,7 +10,6 @@
  * @subpackage sourcehandlers
  * @subpackage csv
  */
-
 class SQLICSVException extends SQLIImportBaseException
 {
     

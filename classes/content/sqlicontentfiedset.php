@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SQLIContentFieldset
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -8,9 +9,9 @@
  * @package sqliimport
  * @subpackage content
  */
-
 class SQLIContentFieldset implements Iterator
 {
+
     /**
      * Current language, as locale xxx-XX
      * @var string
@@ -23,7 +24,7 @@ class SQLIContentFieldset implements Iterator
      * @var SQLIContentField[]
      */
     protected $fields = array();
-    
+
     /**
      * Internal iterator pointer for Iterator implementation
      * @internal
@@ -40,7 +41,9 @@ class SQLIContentFieldset implements Iterator
     public function __get( $name )
     {
         if( !isset( $this->fields[$name] ) || !$this->fields[$name] instanceof SQLIContentField )
+        {
             throw new SQLIContentException( "Invalid '$name' field for current SQLIContent" );
+        }
 
         return $this->fields[$name];
     }
@@ -57,7 +60,9 @@ class SQLIContentFieldset implements Iterator
     public function __set( $name, $value )
     {
         if( !isset( $this->fields[$name] ) || !$this->fields[$name] instanceof SQLIContentField )
+        {
             throw new SQLIContentException( "Invalid '$name' field for current SQLIContent" );
+        }
 
         $this->fields[$name]->setData( $value );
     }
@@ -80,7 +85,7 @@ class SQLIContentFieldset implements Iterator
     {
         return $this->language;
     }
-    
+
     /**
      * Assigns language to fieldset
      * @param string $lang Language as a locale xxx-XX
@@ -99,16 +104,16 @@ class SQLIContentFieldset implements Iterator
     {
         $set = new SQLIContentFieldset();
 
-        foreach( $dataMap as $key => $attribute )
+        foreach( $dataMap as $attribute )
         {
             $set->setContentObjectAttribute( $attribute );
         }
-        
+
         $set->initIterator();
-        
+
         return $set;
     }
-    
+
     /**
      * Refreshes content object attributes for current fields.
      * Mandatory to update good attributes when publishing
@@ -121,16 +126,19 @@ class SQLIContentFieldset implements Iterator
         // Copy missing translations from published version to current draft if needed
         eZContentOperationCollection::copyTranslations( $contentObject->attribute( 'id' ), $version->attribute( 'version' ) );
         $dataMap = $contentObject->fetchDataMap( $version->attribute( 'version' ), $this->language );
-        
+
         foreach( $this->fields as $fieldName => $field )
         {
             if( isset( $dataMap[$fieldName] ) )
+            {
                 $field->setRawAttribute( $dataMap[$fieldName] );
-            else
-                eZDebug::writeWarning( __METHOD__ . ' => Attribute "'.$fieldName.'" not set in data map. Cannot refresh field.', 'SQLIImport' );
+            } else
+            {
+                eZDebug::writeWarning( __METHOD__ . ' => Attribute "' . $fieldName . '" not set in data map. Cannot refresh field.', 'SQLIImport' );
+            }
         }
     }
-    
+
     /**
      * Assigns a new field to the fieldset from an eZContentObjectAttribute object
      * @param eZContentObjectAttribute $attribute
@@ -140,7 +148,7 @@ class SQLIContentFieldset implements Iterator
         $identifier = $attribute->attribute( 'contentclass_attribute_identifier' );
         $this->fields[$identifier] = SQLIContentField::fromContentObjectAttribute( $attribute );
     }
-    
+
     /**
      * Resets input data for each field.
      * Only data that has been assigned will be reset, not content object attribute.
@@ -152,7 +160,7 @@ class SQLIContentFieldset implements Iterator
             $field->resetData();
         }
     }
-    
+
     /**
      * Initializes internal iterator pointer
      * @internal
@@ -161,7 +169,7 @@ class SQLIContentFieldset implements Iterator
     {
         $this->iteratorPointer = array_keys( $this->fields );
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see Iterator::current()
@@ -170,7 +178,7 @@ class SQLIContentFieldset implements Iterator
     {
         return $this->fields[current( $this->iteratorPointer )];
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see Iterator::key()
@@ -179,7 +187,7 @@ class SQLIContentFieldset implements Iterator
     {
         return current( $this->iteratorPointer );
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see Iterator::next()
@@ -188,7 +196,7 @@ class SQLIContentFieldset implements Iterator
     {
         next( $this->iteratorPointer );
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see Iterator::rewind()
@@ -197,7 +205,7 @@ class SQLIContentFieldset implements Iterator
     {
         reset( $this->iteratorPointer );
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see Iterator::valid()
@@ -206,4 +214,5 @@ class SQLIContentFieldset implements Iterator
     {
         return isset( $this->fields[current( $this->iteratorPointer )] );
     }
+
 }

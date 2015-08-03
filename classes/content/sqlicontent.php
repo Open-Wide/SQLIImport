@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File containing SQLIContentObject
  * @copyright Copyright (C) 2010 - SQLi Agency. All rights reserved
@@ -53,8 +54,9 @@
  */
 class SQLIContent
 {
+
     const ACTION_CLEAR_CACHE = 'sqlicontent_clearcache';
-    
+
     /**
      * @var eZContentObject
      */
@@ -65,14 +67,14 @@ class SQLIContent
      * @var SQLIContentFieldsetHolder
      */
     public $fields;
-    
+
     /**
      * Initial locations for content in content tree
      * These locations will be considered as "parent" locations
      * @var array( SQLILocation )
      */
     protected $initialLocations = array();
-    
+
     /**
      * Locations for content.
      * @var SQLILocationSet
@@ -84,7 +86,7 @@ class SQLIContent
      * @var string
      */
     protected $activeLanguage;
-    
+
     /**
      * Content options.
      * See {@link SQLIContentOptions::__set()} to see available options
@@ -101,14 +103,14 @@ class SQLIContent
     {
         
     }
-    
+
     /**
      * Destructor.
      */
     public function __destruct()
     {
         $this->contentObject->cleanupInternalDrafts();
-        
+
         // Free some memory
         $this->flush();
     }
@@ -140,38 +142,42 @@ class SQLIContent
      */
     public static function create( SQLIContentOptions $options )
     {
-        if ( !isset( $options['class_identifier'] ) )
+        if( !isset( $options['class_identifier'] ) )
+        {
             throw new SQLIContentException( 'Cannot create content without "class_identifier" option' );
-            
+        }
+
         $creatorID = $options['creator_id'];
         $sectionID = $options['section_id'];
         $lang = $options['language'];
         $contentObject = null;
-        
+
         // If remote ID is set, first try to fetch content object from it
         if( isset( $options['remote_id'] ) )
         {
             $contentObject = eZContentObject::fetchByRemoteID( $options['remote_id'] );
         }
-        
+
         if( !$contentObject instanceof eZContentObject )
         {
             $db = eZDB::instance();
             $db->begin();
-                $contentClass = eZContentClass::fetchByIdentifier( $options['class_identifier'] );
-                $contentObject = $contentClass->instantiate( $creatorID, $sectionID, false, $lang );
-                if( isset( $options['remote_id'] ) )
-                {
-                    $contentObject->setAttribute( 'remote_id', $options['remote_id'] );
-                    $contentObject->store();
-                }
+            $contentClass = eZContentClass::fetchByIdentifier( $options['class_identifier'] );
+            $contentObject = $contentClass->instantiate( $creatorID, $sectionID, false, $lang );
+            if( isset( $options['remote_id'] ) )
+            {
+                $contentObject->setAttribute( 'remote_id', $options['remote_id'] );
+                $contentObject->store();
+            }
             $db->commit();
         }
-        
+
         $content = self::fromContentObject( $contentObject );
         if( $lang )
+        {
             $content->setActiveLanguage( $lang );
-        
+        }
+
         return $content;
     }
 
@@ -187,7 +193,7 @@ class SQLIContent
         $this->activeLanguage = $language;
         $this->fields->setActiveLanguage( $language );
     }
-    
+
     /**
      * Initializes an object from eZContentObject
      * @param eZContentObject $object
@@ -199,7 +205,7 @@ class SQLIContent
         $content->fields = SQLIContentFieldsetHolder::fromContentObject( $object );
         $content->contentObject = $object;
         $content->setActiveLanguage( $content->fields->getActiveLanguage() );
-        
+
         return $content;
     }
 
@@ -212,14 +218,16 @@ class SQLIContent
     public static function fromContentObjectID( $objectID )
     {
         $contentObject = eZContentObject::fetch( $objectID );
-        if ( !$contentObject instanceof eZContentObject )
+        if( !$contentObject instanceof eZContentObject )
+        {
             throw new SQLIContentException( "Unable to find an eZContentObject with ID $objectID" );
-        
+        }
+
         $content = self::fromContentObject( $contentObject );
-        
+
         return $content;
     }
-    
+
     /**
      * Initializes an object from a node
      * @param eZContentObjectTreeNode $node
@@ -231,10 +239,10 @@ class SQLIContent
         $object = $node->object();
         $content = self::fromContentObject( $object );
         $content->locations->addLocation( SQLILocation::fromNode( $node ) );
-        
+
         return $content;
     }
-    
+
     /**
      * Initializes an object from a nodeID
      * @param int $nodeID
@@ -244,12 +252,14 @@ class SQLIContent
     public static function fromNodeID( $nodeID )
     {
         $node = eZContentObjectTreeNode::fetch( $nodeID );
-        if ( !$node instanceof eZContentObjectTreeNode )
-            throw new SQLIContentException("Unable to find node with ID $nodeID");
-        
+        if( !$node instanceof eZContentObjectTreeNode )
+        {
+            throw new SQLIContentException( "Unable to find node with ID $nodeID" );
+        }
+
         return self::fromNode( $node );
     }
-    
+
     /**
      * Initializes an object from RemoteID.
      * If no content object can be found, returns null
@@ -260,14 +270,17 @@ class SQLIContent
     {
         $contentObject = eZContentObject::fetchByRemoteID( $remoteID );
         $content = null;
-        if ( $contentObject instanceof eZContentObject )
+        if( $contentObject instanceof eZContentObject )
+        {
             $content = self::fromContentObject( $contentObject );
-        else
-            SQLIImportLogger::logWarning( "Unable to find an eZContentObject with RemoteID $remoteID", false );
-        
+        } else
+        {
+            OWScriptLogger::logWarning( "Unable to find an eZContentObject with RemoteID $remoteID", "content" );
+        }
+
         return $content;
     }
-    
+
     /**
      * Generic string version of object
      * Returns bulk "name" of content object
@@ -276,7 +289,7 @@ class SQLIContent
     {
         return $this->contentObject->attribute( 'name' );
     }
-    
+
     /**
      * Allows to set options to content
      * Enter description here ...
@@ -285,7 +298,7 @@ class SQLIContent
     public function setOptions( SQLIContentOptions $options )
     {
         $this->options = $options;
-        
+
         foreach( $options as $optionName => $option )
         {
             switch( $optionName )
@@ -297,10 +310,10 @@ class SQLIContent
                     $this->contentObject->setAttribute( $optionName, $option );
             }
         }
-        
+
         $this->contentObject->store();
     }
-    
+
     /**
      * Adds a new translation to content if not already set
      * @param string $lang Translation code to add, as a locale (xxx-XX)
@@ -310,13 +323,12 @@ class SQLIContent
         if( !isset( $this->fields[$lang] ) )
         {
             $this->fields->addTranslation( $lang );
-        }
-        else
+        } else
         {
-            eZDebug::writeWarning(__CLASS__ . ' : Adding already existent language '.$lang);
+            eZDebug::writeWarning( __CLASS__ . ' : Adding already existent language ' . $lang );
         }
     }
-    
+
     /**
      * Checks if current content is a newly created one
      * @return bool
@@ -324,7 +336,7 @@ class SQLIContent
     public function isNew()
     {
         $isNew = false;
-        
+
         // We can reasonably consider that first version is "1"
         // However, kernel lets instantiate an object with a version number other than "1" :-|
         // @see eZContentClass::instantiate()
@@ -334,12 +346,14 @@ class SQLIContent
             // But more efficient as we avoid some DB calls (this method can be called several times in one script)
             $aStatusNew = array( eZContentObject::STATUS_DRAFT );
             if( in_array( $this->contentObject->attribute( 'status' ), $aStatusNew ) )
+            {
                 $isNew = true;
+            }
         }
-        
+
         return $isNew;
     }
-    
+
     /**
      * Will clear current content object cache and reset dataMap.
      * Avoids useless memory consumption and allows to "refresh" content object.
@@ -349,14 +363,14 @@ class SQLIContent
      */
     public function flush()
     {
-        if ( $this->contentObject instanceof eZContentObject )
+        if( $this->contentObject instanceof eZContentObject )
         {
             $objectID = $this->contentObject->attribute( 'id' );
             $this->contentObject->resetDataMap();
             eZContentObject::clearCache( array( $objectID ) );
         }
     }
-    
+
     /**
      * Refreshes internal {@link eZContentObject content object}
      * @see eZContentObject
@@ -364,21 +378,21 @@ class SQLIContent
     public function refresh()
     {
         $contentObjectID = $this->contentObject->attribute( 'id' );
-        
+
         global $eZContentObjectContentObjectCache;
         unset( $eZContentObjectContentObjectCache[$contentObjectID] );
-        
+
         $this->contentObject = eZContentObject::fetch( $contentObjectID );
-        
+
         // Reset input data
         foreach( $this->fields as $fieldset )
         {
             $fieldset->resetInputData();
         }
-        
+
         $this->refreshLocations();
     }
-    
+
     /**
      * Returns current draft for content.
      * If no draft has been found, a new one will be created
@@ -400,10 +414,13 @@ class SQLIContent
      */
     public function __call( $method, $arguments )
     {
-        if ( method_exists( $this->contentObject, $method ) )
+        if( method_exists( $this->contentObject, $method ) )
+        {
             return call_user_func_array( array( $this->contentObject, $method ), $arguments );
-        else
+        } else
+        {
             throw new ezcBasePropertyNotFoundException( $method );
+        }
     }
 
     /**
@@ -418,32 +435,35 @@ class SQLIContent
     public function __get( $name )
     {
         $ret = null;
-        
+
         switch( $name )
         {
             case 'locations':
-                if ( !$this->currentLocations instanceof SQLILocationSet )
+                if( !$this->currentLocations instanceof SQLILocationSet )
                 {
                     $this->refreshLocations();
                 }
-                
+
                 $ret = $this->currentLocations;
                 break;
             case 'defaultLocation':
-                if ( !$this->currentLocations instanceof SQLILocationSet )
+                if( !$this->currentLocations instanceof SQLILocationSet )
                 {
                     $this->refreshLocations();
                 }
-                
+
                 $ret = $this->currentLocations[$this->contentObject->mainNodeID()];
                 break;
             default:
-                if ( $this->contentObject->hasAttribute( $name ) )
+                if( $this->contentObject->hasAttribute( $name ) )
+                {
                     $ret = $this->contentObject->attribute( $name );
-                else
+                } else
+                {
                     throw new ezcBasePropertyNotFoundException( $name );
+                }
         }
-        
+
         return $ret;
     }
 
@@ -466,7 +486,7 @@ class SQLIContent
 
         $this->contentObject->setAttribute( $name, $value );
     }
-    
+
     /**
      * Check if given attribute exists.
      * All "classic" attributes can be used (See {@link eZContentObject::definition()}).
@@ -477,7 +497,7 @@ class SQLIContent
     {
         return $this->contentObject->hasAttribute( $name );
     }
-    
+
     /**
      * Will remove content and all its locations/translations...
      * See {@link self::removeLocation()} for removing only one location.
@@ -492,7 +512,7 @@ class SQLIContent
         {
             $aNodesID[] = $node['node_id'];
         }
-        
+
         $this->doRemove( $aNodesID, $moveToTrash );
         $this->flush();
     }
@@ -507,12 +527,14 @@ class SQLIContent
     public function removeLocation( $nodeID, $moveToTrash = true )
     {
         $node = eZContentObjectTreeNode::fetch( $nodeID );
-        if ( !$node instanceof eZContentObjectTreeNode )
-            throw new SQLIContentException( __METHOD__." : Invalid node with nodeID #$nodeID. Cannot remove it from tree" );
-        
+        if( !$node instanceof eZContentObjectTreeNode )
+        {
+            throw new SQLIContentException( __METHOD__ . " : Invalid node with nodeID #$nodeID. Cannot remove it from tree" );
+        }
+
         $this->doRemove( array( $nodeID ), $moveToTrash );
     }
-    
+
     /**
      * Does the remove job.
      * Will use content_delete operation if available (workflow support)
@@ -522,20 +544,16 @@ class SQLIContent
      */
     private function doRemove( array $aNodeID, $moveToTrash = true )
     {
-        if ( eZOperationHandler::operationIsAvailable( 'content_delete' ) )
+        if( eZOperationHandler::operationIsAvailable( 'content_delete' ) )
         {
-            $operationResult = eZOperationHandler::execute( 'content',
-                                                            'delete',
-                                                             array( 'node_id_list' => $aNodeID,
-                                                                    'move_to_trash' => $moveToTrash ),
-                                                              null, true );
-        }
-        else
+            eZOperationHandler::execute( 'content', 'delete', array( 'node_id_list' => $aNodeID,
+                'move_to_trash' => $moveToTrash ), null, true );
+        } else
         {
             eZContentOperationCollection::deleteObject( $aNodeID, $moveToTrash );
         }
     }
-    
+
     /**
      * Adds a location for content in content tree.
      * Content must has been published at least once
@@ -549,14 +567,13 @@ class SQLIContent
         if( $this->isNew() )
         {
             $this->initialLocations[] = $parentLocation;
-        }
-        else
+        } else
         {
             $publisher = SQLIContentPublisher::getInstance();
             $publisher->addLocationToContent( $parentLocation, $this );
         }
     }
-    
+
     /**
      * Returns "initial" locations.
      * It only has sense if content is new
@@ -567,19 +584,22 @@ class SQLIContent
     {
         return $this->initialLocations;
     }
-    
+
     /**
      * Checks if content has initial location(s)
      * @return bool
      */
     public function hasInitialLocations()
     {
-        if( $this->isNew() ) // New content, check if initial locations has been registered
+        if( $this->isNew() )
+        { // New content, check if initial locations has been registered
             return count( $this->initialLocations ) > 0;
-        else // Existing content, so necessarily has an initial location
+        } else
+        { // Existing content, so necessarily has an initial location
             return true;
+        }
     }
-    
+
     /**
      * Refreshes locations for content
      * @internal
@@ -594,7 +614,7 @@ class SQLIContent
             $this->currentLocations->addLocation( SQLILocation::fromNode( $node ) );
         }
     }
-    
+
     /**
      * Adds a "pending clear cache" action if ViewCaching is disabled.
      * This method should be called at publish time.
@@ -606,13 +626,14 @@ class SQLIContent
         if( eZINI::instance()->variable( 'ContentSettings', 'ViewCaching' ) === 'disabled' )
         {
             $rowPending = array(
-                'action'        => self::ACTION_CLEAR_CACHE,
-                'created'       => time(),
-                'param'         => $this->contentObject->attribute( 'id' )
+                'action' => self::ACTION_CLEAR_CACHE,
+                'created' => time(),
+                'param' => $this->contentObject->attribute( 'id' )
             );
-            
+
             $pendingItem = new eZPendingActions( $rowPending );
             $pendingItem->store();
         }
     }
+
 }
