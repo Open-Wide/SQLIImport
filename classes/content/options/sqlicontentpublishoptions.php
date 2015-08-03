@@ -9,30 +9,33 @@
  * @package sqliimport
  * @subpackage content.options
  */
-class SQLIContentPublishOptions extends SQLIImportOptions {
+class SQLIContentPublishOptions extends SQLIImportOptions
+{
 
-	/**
-	 * Constructor
-	 * @param array $options
-	 */
-	public function __construct( array $options = array() ) {
-		// Define some default values
-		$this->properties = array(
-			'parent_node_id' => null,
-			'modification_check' => true,
-			'copy_prev_version' => true,
-			'update_null_field' => false, // If true, will update any field in DB, even if data is not set (null)
-		);
+    /**
+     * Constructor
+     * @param array $options
+     */
+    public function __construct( array $options = array() )
+    {
+        // Define some default values
+        $this->properties = array(
+            'parent_node_id' => null,
+            'modification_check' => true,
+            'copy_prev_version' => true,
+            'update_null_field' => false, // If true, will update any field in DB, even if data is not set (null)
+        );
 
-		parent::__construct( $options );
-	}
+        parent::__construct( $options );
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see lib/ezc/Base/src/ezcBaseOptions::__set()
-	 */
-	public function __set( $name, $value ) {
-		parent::__set( $name, $value );
-	}
+    /**
+     * (non-PHPdoc)
+     * @see lib/ezc/Base/src/ezcBaseOptions::__set()
+     */
+    public function __set( $name, $value )
+    {
+        parent::__set( $name, $value );
+    }
 
 }

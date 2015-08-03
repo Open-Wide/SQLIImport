@@ -15,22 +15,25 @@
  * Diff handler for ezbinaryfile attributes.
  * Only takes file name into account.
  */
-class SQLIBinaryFileDiffHandler implements ISQLIDiffHandler {
+class SQLIBinaryFileDiffHandler implements ISQLIDiffHandler
+{
 
-	/**
-	 * (non-PHPdoc)
-	 * @see extension/sqliimport/classes/content/diffhandlers/ISQLIDiffHandler::contentIsModified()
-	 */
-	public static function contentIsModified( $data, eZContentObjectAttribute $attribute ) {
-		$isModified = false;
+    /**
+     * (non-PHPdoc)
+     * @see extension/sqliimport/classes/content/diffhandlers/ISQLIDiffHandler::contentIsModified()
+     */
+    public static function contentIsModified( $data, eZContentObjectAttribute $attribute )
+    {
+        $isModified = false;
 
-		$originalFilename = $attribute->attribute( 'content' )->attribute( 'original_filename' );
-		$newFilename = basename( (string) $data );
-		if ( $newFilename != $originalFilename ) {
-			$isModified = true;
-		}
+        $originalFilename = $attribute->attribute( 'content' )->attribute( 'original_filename' );
+        $newFilename = basename( (string) $data );
+        if( $newFilename != $originalFilename )
+        {
+            $isModified = true;
+        }
 
-		return $isModified;
-	}
+        return $isModified;
+    }
 
 }

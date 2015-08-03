@@ -73,63 +73,63 @@
                                     <td>{$import.requested_time|l10n( 'shortdatetime' )}</td>
                                     <td>
                                         {if and( $import.type|eq( 2 ), $import.scheduled_import, $import.user_has_access )}{* 2 = scheduled, sorry for the hardcoded value :-/ *}
-                                            <a href={concat( 'sqliimport/addscheduled/', $import.scheduled_id )|ezurl}>{$import.type_string|i18n( 'extension/sqliimport/type' )}</a>
-                                        {else}
-                                            {$import.type_string|i18n( 'extension/sqliimport/type' )}
-                                        {/if}
-                                    </td>
-                                    <td>
-                                        {$import.status_string|i18n( 'extension/sqliimport/type' )}
-                                        {if $import.user_has_access}
-                                            {switch match=$import.status}
-                                            {case match=0}{* Pending *}
-                                            (<a href={concat( '/sqliimport/alterimport/cancel/', $import.id )|ezurl} 
-                                                onclick="return confirm('{'Are you sure you want to cancel this import ?'|i18n( 'extension/sqliimport' )}')">{'Cancel'|i18n( 'extension/sqliimport' )}</a>)
+                                                <a href={concat( 'sqliimport/addscheduled/', $import.scheduled_id )|ezurl}>{$import.type_string|i18n( 'extension/sqliimport/type' )}</a>
+                                            {else}
+                                                {$import.type_string|i18n( 'extension/sqliimport/type' )}
+                                            {/if}
+                                        </td>
+                                        <td>
+                                            {$import.status_string|i18n( 'extension/sqliimport/type' )}
+                                            {if $import.user_has_access}
+                                                {switch match=$import.status}
+                                                {case match=0}{* Pending *}
+                                                (<a href={concat( '/sqliimport/alterimport/cancel/', $import.id )|ezurl} 
+                                                    onclick="return confirm('{'Are you sure you want to cancel this import ?'|i18n( 'extension/sqliimport' )}')">{'Cancel'|i18n( 'extension/sqliimport' )}</a>)
 
-                                            {/case}
-                                            {case match=1}{* Running *}
-                                            (<a href={concat( '/sqliimport/alterimport/interrupt/', $import.id )|ezurl}
-                                                onclick="return confirm('{'Are you sure you want to interrupt this import ?'|i18n( 'extension/sqliimport' )}')">{'Interrupt'|i18n( 'extension/sqliimport' )}</a>)
+                                                {/case}
+                                                {case match=1}{* Running *}
+                                                (<a href={concat( '/sqliimport/alterimport/interrupt/', $import.id )|ezurl}
+                                                    onclick="return confirm('{'Are you sure you want to interrupt this import ?'|i18n( 'extension/sqliimport' )}')">{'Interrupt'|i18n( 'extension/sqliimport' )}</a>)
 
-                                            {/case}
-                                            {case}{/case}
-                                            {/switch}
-                                        {/if}
-                                    </td>
-                                    <td>{$import.percentage}%<br />
-                                        {if and( $import.status|lt(2), $import.progression_notes|ne(''))}
-                                            {"Progression notes"|i18n( 'extension/sqliimport' )}: {$import.progression_notes}<br />
-                                        {/if}
-                                        {if $import.running_log}
-                                            <a href={concat('owscriptlogger/logs/', $import.running_log)|ezurl()} target="_blank">{'View logs'|i18n( 'extension/sqliimport' )}</a>
-                                        {/if}
-                                    </td>
-                                    <td>
-                                        {if and( $import.type|eq( 2 ), $import.scheduled_import, $import.user_has_access )|not()}
-                                            <form action={'sqliimport/list'|ezurl()} method="POST">
-                                                <input name='ImportID' value="{$import.id}" type='hidden' />
-                                                <button name="CopyImportButton" alt="{'Create a new import from this one'|i18n( 'extension/sqliimport' )}" title="{'Create a new import from this one'|i18n( 'extension/sqliimport' )}">
-                                                    <img class="button" src={'copy.gif'|ezimage}>
-                                                </button>
-                                            </form>
-                                        {/if}
-                                    </td>
-                                </tr>
-                            {/foreach}
-                        </tbody>
-                    </table>
-                    <p>&nbsp;</p>
-                {/if}
-            </div>
-            <div class="context-toolbar">
-                {include name=navigator uri='design:navigator/google.tpl'
+                                                {/case}
+                                                {case}{/case}
+                                                {/switch}
+                                            {/if}
+                                        </td>
+                                        <td>{$import.percentage}%<br />
+                                            {if and( $import.status|lt(2), $import.progression_notes|ne(''))}
+                                                {"Progression notes"|i18n( 'extension/sqliimport' )}: {$import.progression_notes}<br />
+                                            {/if}
+                                            {if $import.running_log}
+                                                <a href={concat('owscriptlogger/logs/', $import.running_log)|ezurl()} target="_blank">{'View logs'|i18n( 'extension/sqliimport' )}</a>
+                                            {/if}
+                                        </td>
+                                        <td>
+                                            {if and( $import.type|eq( 2 ), $import.scheduled_import, $import.user_has_access )|not()}
+                                                <form action={'sqliimport/list'|ezurl()} method="POST">
+                                                    <input name='ImportID' value="{$import.id}" type='hidden' />
+                                                    <button name="CopyImportButton" alt="{'Create a new import from this one'|i18n( 'extension/sqliimport' )}" title="{'Create a new import from this one'|i18n( 'extension/sqliimport' )}">
+                                                        <img class="button" src={'copy.gif'|ezimage}>
+                                                    </button>
+                                                </form>
+                                            {/if}
+                                        </td>
+                                    </tr>
+                                    {/foreach}
+                                    </tbody>
+                                </table>
+                                <p>&nbsp;</p>
+                                {/if}
+                                </div>
+                                <div class="context-toolbar">
+                                    {include name=navigator uri='design:navigator/google.tpl'
                 page_uri=$uri
                 item_count=$import_count
                 view_parameters=$view_parameters
                 item_limit=$limit}
-            </div>
-        </div>
-    </div>
-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-<div class="controlbar"><div class="box-bc"><div class="box-ml"><div class="box-mr"><div class="box-tc"><div class="box-bl"><div class="box-br"></div></div></div></div></div></div></div>
+                    <div class="controlbar"><div class="box-bc"><div class="box-ml"><div class="box-mr"><div class="box-tc"><div class="box-bl"><div class="box-br"></div></div></div></div></div></div></div>

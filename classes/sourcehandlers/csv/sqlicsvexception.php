@@ -10,6 +10,7 @@
  * @subpackage sourcehandlers
  * @subpackage csv
  */
-class SQLICSVException extends SQLIImportBaseException {
-	
+class SQLICSVException extends SQLIImportBaseException
+{
+    
 }

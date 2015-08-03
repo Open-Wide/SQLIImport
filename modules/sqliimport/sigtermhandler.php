@@ -13,31 +13,36 @@
  * @package sqliimport
  */
 $isPcntl = function_exists( 'pcntl_signal' );
-if ( $isPcntl ) {
-	declare( ticks = 1 );
+if( $isPcntl )
+{
+    declare( ticks = 1 );
 
-	function SQLIImportSignalHandler( $signo ) {
-		if ( SQLIImportToken::importIsRunning() ) {
-			// Note : SIGKILL cannot be caught
-			// So try to always send a SIGINT (kill -2) or SIGTERM (kill -15) to request interruption
-			switch ( $signo ) {
-				case SIGTERM:
-				case SIGINT:
+    function SQLIImportSignalHandler( $signo )
+    {
+        if( SQLIImportToken::importIsRunning() )
+        {
+            // Note : SIGKILL cannot be caught
+            // So try to always send a SIGINT (kill -2) or SIGTERM (kill -15) to request interruption
+            switch( $signo )
+            {
+                case SIGTERM:
+                case SIGINT:
                     $db = eZDB::instance();
                     $db->rollback();
-					OWScriptLogger::logNotice( 'Caught SIGTERM while importing. Demanding import interruption (might take a little while)', 'sigtermhandler' );
-					$factory = SQLIImportFactory::instance();
-					$currentItem = $factory->getCurrentImportItem();
-					$currentItem->setAttribute( 'status', SQLIImportItem::STATUS_INTERRUPTED );
-					$currentItem->store();
+                    OWScriptLogger::logNotice( 'Caught SIGTERM while importing. Demanding import interruption (might take a little while)', 'sigtermhandler' );
+                    $factory = SQLIImportFactory::instance();
+                    $currentItem = $factory->getCurrentImportItem();
+                    $currentItem->setAttribute( 'status', SQLIImportItem::STATUS_INTERRUPTED );
+                    $currentItem->store();
                     SQLIImportToken::cleanAll();
-					break;
-			}
-		}
-	}
+                    break;
+            }
+        }
+    }
 
-	if ( !function_exists( 'OWScriptLoggerSignalHandler' ) ) {
-		pcntl_signal( SIGTERM, 'SQLIImportSignalHandler' );
-		pcntl_signal( SIGINT, 'SQLIImportSignalHandler' );
-	}
+    if( !function_exists( 'OWScriptLoggerSignalHandler' ) )
+    {
+        pcntl_signal( SIGTERM, 'SQLIImportSignalHandler' );
+        pcntl_signal( SIGINT, 'SQLIImportSignalHandler' );
+    }
 }

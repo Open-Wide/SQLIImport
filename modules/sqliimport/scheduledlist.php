@@ -15,31 +15,33 @@ $Module = $Params['Module'];
 $Result = array();
 $tpl = SQLIImportUtils::templateInit();
 
-try {
-	$offset = isset( $Params['UserParameters']['offset'] ) ? (int) $Params['UserParameters']['offset'] : 0; // Offset for pagination
-	$limit = eZPreferences::value( 'sqliimport_import_limit' );
-	$limit = $limit ? $limit : 10; // Default limit is 10
-	$imports = SQLIScheduledImport::fetchList( $offset, $limit );
-	$importCount = SQLIScheduledImport::count( SQLIScheduledImport::definition() );
-	$currentURI = '/' . $Module->currentModule() . '/' . $Module->currentView();
+try
+{
+    $offset = isset( $Params['UserParameters']['offset'] ) ? (int) $Params['UserParameters']['offset'] : 0; // Offset for pagination
+    $limit = eZPreferences::value( 'sqliimport_import_limit' );
+    $limit = $limit ? $limit : 10; // Default limit is 10
+    $imports = SQLIScheduledImport::fetchList( $offset, $limit );
+    $importCount = SQLIScheduledImport::count( SQLIScheduledImport::definition() );
+    $currentURI = '/' . $Module->currentModule() . '/' . $Module->currentView();
 
-	$tpl->setVariable( 'imports', $imports );
-	$tpl->setVariable( 'offset', $offset );
-	$tpl->setVariable( 'limit', $limit );
-	$tpl->setVariable( 'uri', $currentURI );
-	$tpl->setVariable( 'import_count', $importCount );
-	$tpl->setVariable( 'view_parameters', $Params['UserParameters'] );
-} catch ( Exception $e ) {
-	$errMsg = $e->getMessage();
-	OWScriptLogger::writeError( $errMsg, 'schedulelist' );
-	$tpl->setVariable( 'error_message', $errMsg );
+    $tpl->setVariable( 'imports', $imports );
+    $tpl->setVariable( 'offset', $offset );
+    $tpl->setVariable( 'limit', $limit );
+    $tpl->setVariable( 'uri', $currentURI );
+    $tpl->setVariable( 'import_count', $importCount );
+    $tpl->setVariable( 'view_parameters', $Params['UserParameters'] );
+} catch( Exception $e )
+{
+    $errMsg = $e->getMessage();
+    OWScriptLogger::writeError( $errMsg, 'schedulelist' );
+    $tpl->setVariable( 'error_message', $errMsg );
 }
 
 $Result['path'] = array(
-	array(
-		'url' => false,
-		'text' => SQLIImportUtils::translate( 'extension/sqliimport', 'Scheduled import list' )
-	)
+    array(
+        'url' => false,
+        'text' => SQLIImportUtils::translate( 'extension/sqliimport', 'Scheduled import list' )
+    )
 );
 $Result['left_menu'] = 'design:sqliimport/parts/leftmenu.tpl';
 $Result['content'] = $tpl->fetch( 'design:sqliimport/scheduledlist.tpl' );

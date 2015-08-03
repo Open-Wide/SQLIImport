@@ -25,14 +25,15 @@
  *
  * </code>
  */
-interface ISQLIDiffHandler {
+interface ISQLIDiffHandler
+{
 
-	/**
-	 * Checks if content has been really modified for $field
-	 * Returns true if content has been modified, false otherwise
-	 * @param string $data "New" data that needs to be compared with published data
-	 * @param eZContentObjectAttribute $attribute Published attribute, for reference
-	 * @return bool
-	 */
-	public static function contentIsModified( $data, eZContentObjectAttribute $attribute );
+    /**
+     * Checks if content has been really modified for $field
+     * Returns true if content has been modified, false otherwise
+     * @param string $data "New" data that needs to be compared with published data
+     * @param eZContentObjectAttribute $attribute Published attribute, for reference
+     * @return bool
+     */
+    public static function contentIsModified( $data, eZContentObjectAttribute $attribute );
 }

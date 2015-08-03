@@ -13,6 +13,7 @@
 /**
  * This exception is thrown when an issue related to a location has been detected
  */
-class SQLILocationException extends SQLIImportBaseException {
-	
+class SQLILocationException extends SQLIImportBaseException
+{
+    
 }

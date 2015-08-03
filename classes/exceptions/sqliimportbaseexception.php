@@ -8,9 +8,10 @@
  * @version @@@VERSION@@@
  * @package sqliimport
  */
-class SQLIImportBaseException extends ezcBaseException {
+class SQLIImportBaseException extends ezcBaseException
+{
 
-	const IMPORT_ALREADY_RUNNING = -1,
-			UNDEFINED_HANDLERS = -2;
+    const IMPORT_ALREADY_RUNNING = -1,
+            UNDEFINED_HANDLERS = -2;
 
 }

@@ -15,23 +15,26 @@
  * Diff handler for ezimage attributes.
  * Only takes file name into account.
  */
-class SQLIImageDiffHandler implements ISQLIDiffHandler {
+class SQLIImageDiffHandler implements ISQLIDiffHandler
+{
 
-	/**
-	 * (non-PHPdoc)
-	 * @see extension/sqliimport/classes/content/diffhandlers/ISQLIDiffHandler::contentIsModified()
-	 */
-	public static function contentIsModified( $data, eZContentObjectAttribute $attribute ) {
-		$isModified = false;
+    /**
+     * (non-PHPdoc)
+     * @see extension/sqliimport/classes/content/diffhandlers/ISQLIDiffHandler::contentIsModified()
+     */
+    public static function contentIsModified( $data, eZContentObjectAttribute $attribute )
+    {
+        $isModified = false;
 
-		$imageHandler = $attribute->attribute( 'content' );
-		$originalFilename = $imageHandler->attribute( 'original_filename' );
-		$newImageFilename = basename( (string) $data );
-		if ( $newImageFilename != $originalFilename ) {
-			$isModified = true;
-		}
+        $imageHandler = $attribute->attribute( 'content' );
+        $originalFilename = $imageHandler->attribute( 'original_filename' );
+        $newImageFilename = basename( (string) $data );
+        if( $newImageFilename != $originalFilename )
+        {
+            $isModified = true;
+        }
 
-		return $isModified;
-	}
+        return $isModified;
+    }
 
 }

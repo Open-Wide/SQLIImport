@@ -12,6 +12,7 @@
 /**
  * This exception is thrown when a runtime issue has been detected
  */
-class SQLIImportRuntimeException extends SQLIImportBaseException {
-	
+class SQLIImportRuntimeException extends SQLIImportBaseException
+{
+    
 }

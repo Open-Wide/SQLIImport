@@ -15,26 +15,28 @@ $Module = $Params['Module'];
 $Result = array();
 $tpl = SQLIImportUtils::templateInit();
 
-try {
-	$user = eZUser::currentUser();
-	$userID = $user->attribute( 'contentobject_id' );
-	$userLogin = $user->attribute( 'login' );
-	OWScriptLogger::logNotice( 'User "' . $userLogin . '" (#' . $userID . ') requested import history purge on ' . date( 'Y-m-d H:i' ), 'purgelist' );
-	SQLIImportItem::purgeImportHistory();
+try
+{
+    $user = eZUser::currentUser();
+    $userID = $user->attribute( 'contentobject_id' );
+    $userLogin = $user->attribute( 'login' );
+    OWScriptLogger::logNotice( 'User "' . $userLogin . '" (#' . $userID . ') requested import history purge on ' . date( 'Y-m-d H:i' ), 'purgelist' );
+    SQLIImportItem::purgeImportHistory();
 
-	$Module->redirectToView( 'list' );
-} catch ( Exception $e ) {
-	$errMsg = $e->getMessage();
-	OWScriptLogger::writeError( $errMsg, 'purgelist' );
-	$tpl->setVariable( 'error_message', $errMsg );
+    $Module->redirectToView( 'list' );
+} catch( Exception $e )
+{
+    $errMsg = $e->getMessage();
+    OWScriptLogger::writeError( $errMsg, 'purgelist' );
+    $tpl->setVariable( 'error_message', $errMsg );
 
-	$Result['path'] = array(
-		array(
-			'url' => false,
-			'text' => SQLIImportUtils::translate( 'extension/sqliimport/error', 'Error' )
-		)
-	);
-	$Result['left_menu'] = 'design:sqliimport/parts/leftmenu.tpl';
-	$Result['content'] = $tpl->fetch( 'design:sqliimport/altererror.tpl' );
+    $Result['path'] = array(
+        array(
+            'url' => false,
+            'text' => SQLIImportUtils::translate( 'extension/sqliimport/error', 'Error' )
+        )
+    );
+    $Result['left_menu'] = 'design:sqliimport/parts/leftmenu.tpl';
+    $Result['content'] = $tpl->fetch( 'design:sqliimport/altererror.tpl' );
 }
 

@@ -12,6 +12,7 @@
 /**
  * This exception is thrown when a config issue has been detected
  */
-class SQLIImportConfigException extends SQLIImportBaseException {
-	
+class SQLIImportConfigException extends SQLIImportBaseException
+{
+    
 }
